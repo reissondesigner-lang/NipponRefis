@@ -73,7 +73,9 @@
         <h3 id="modal-title" class="font-bold text-lg mb-2">Novo Cliente</h3>
         
         <label class="text-xs font-bold">DATA DA VENDA/TROCA:</label>
-        <input type="date" id="data-venda"> <input type="text" id="nome-cliente" placeholder="Nome Completo">
+        <input type="date" id="data-venda">
+        <input type="hidden" id="modelo-refil-valor" value="9">
+        <input type="text" id="nome-cliente" placeholder="Nome Completo">
         <input type="tel" id="whatsapp-cliente" placeholder="WhatsApp (DDD + Número)">
         
         <label class="text-xs font-bold">MODELO DO REFIL:</label>
@@ -81,7 +83,6 @@
             <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model flex-1 p-2 border rounded border-navy text-navy font-bold text-xs">ALCALINE (9m)</button>
             <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model flex-1 p-2 border rounded border-navy text-navy font-bold text-xs">MAX (1 ano)</button>
         </div>
-        <input type="hidden" id="modelo-refil-valor" value="9">
 
         <label class="text-xs font-bold">QUANTIDADE:</label>
         <input type="number" id="qtd-refil" value="1" min="1">
