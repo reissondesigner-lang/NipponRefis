@@ -1,0 +1,42 @@
+:root {
+    --navy: #002344;
+    --silver: #E5E7E9;
+    --gold: #D4AF37;
+    --white: #FFFFFF;
+}
+
+body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; }
+.hidden { display: none !important; }
+.screen { min-height: 100vh; width: 100%; }
+
+/* Estilo Nipponflex */
+.bg-navy { background: var(--navy); }
+.text-navy { color: var(--navy); }
+
+.app-header { background: var(--navy); color: white; padding: 15px; position: sticky; top: 0; z-index: 100; }
+.header-content { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto; }
+.brand { font-size: 1.2rem; letter-spacing: 1px; }
+
+.dashboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
+.dash-card { background: white; padding: 10px; border-radius: 8px; text-align: center; border-bottom: 3px solid #ccc; }
+.dash-card span { display: block; font-size: 1.5rem; font-weight: bold; }
+.dash-card label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+
+.warning { border-color: #f59e0b; }
+.danger { border-color: #ef4444; }
+.info { border-color: #3b82f6; }
+
+.btn-add { width: 100%; background: var(--navy); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
+
+/* Cards de Cliente */
+.cliente-card { background: white; margin-bottom: 12px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.status-vencido { border-left: 6px solid #ef4444; }
+.status-hoje { border-left: 6px solid #f59e0b; }
+.status-ok { border-left: 6px solid #10b981; }
+
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
+.modal-content { background: white; padding: 20px; border-radius: 15px; width: 100%; max-width: 400px; }
+.modal-content input, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+
+.btn-confirm { background: var(--navy); color: white; border: none; padding: 10px 20px; border-radius: 5px; }
+.btn-cancel { background: #eee; border: none; padding: 10px 20px; border-radius: 5px; margin-left: 10px; }
