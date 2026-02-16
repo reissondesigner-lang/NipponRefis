@@ -31,7 +31,62 @@ function showBlock() {
     document.getElementById('login-screen').classList.remove('active');
     document.getElementById('block-screen').classList.add('active');
 }
+// --- FUNÇÕES DE INTERFACE (ESTOQUE E CONFIG) ---
 
+window.abrirEstoque = () => {
+    document.getElementById('modal-estoque').classList.remove('hidden');
+};
+
+window.fecharEstoque = () => {
+    document.getElementById('modal-estoque').classList.add('hidden');
+};
+
+window.abrirConfiguracoes = () => {
+    // Preenche o campo de texto com a mensagem atual antes de abrir
+    document.getElementById('msg-custom-input').value = msgPadrao;
+    document.getElementById('modal-config').classList.remove('hidden');
+};
+
+window.fecharConfig = () => {
+    document.getElementById('modal-config').classList.add('hidden');
+};
+
+window.salvarConfiguracoes = async () => {
+    const novaMsg = document.getElementById('msg-custom-input').value;
+    
+    try {
+        const userRef = doc(db, "users", usuarioLogado.uid);
+        await updateDoc(userRef, {
+            msgCustom: novaMsg
+        });
+        msgPadrao = novaMsg; // Atualiza na memória do app
+        alert("Configurações salvas com sucesso!");
+        window.fecharConfig();
+    } catch (error) {
+        console.error("Erro ao salvar config:", error);
+        alert("Erro ao salvar. Verifique sua conexão.");
+    }
+};
+
+// Função para atualizar o estoque manualmente no painel de estoque
+window.atualizarEstoqueLocal = async () => {
+    const s9 = parseInt(document.getElementById('stock-9').value) || 0;
+    const s12 = parseInt(document.getElementById('stock-12').value) || 0;
+    
+    try {
+        const userRef = doc(db, "users", usuarioLogado.uid);
+        await updateDoc(userRef, {
+            estoque9: s9,
+            estoque12: s12
+        });
+        
+        // Atualiza o badge (bolinha) no topo
+        document.getElementById('estoque-badge').innerText = s9 + s12;
+        alert("Estoque atualizado!");
+    } catch (error) {
+        alert("Erro ao atualizar estoque.");
+    }
+};
 // Torne as funções globais para o Firebase conseguir chamar
 window.showApp = showApp;
 window.showLogin = showLogin;
