@@ -73,3 +73,8 @@ input:focus { border-color: var(--navy); }
 /* MODAL */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 100; }
 .modal-content { background: white; padding: 1.5rem; border-radius: 1rem; width: 100%; max-width: 450px; }
+
+.btn-model-active {
+    background-color: var(--navy) !important;
+    color: white !important;
+}
