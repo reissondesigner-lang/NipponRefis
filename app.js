@@ -287,3 +287,18 @@ function atualizarInterfaceEstoque(d) {
 
 // Inicializa botões do modal
 window.selecionarModelo(9);
+
+
+// --- FUNÇÃO DE LOGOUT ---
+window.logout = () => {
+    if (confirm("Deseja realmente sair do sistema?")) {
+        signOut(auth)
+            .then(() => {
+                // O onAuthStateChanged cuidará de mostrar a tela de login
+                console.log("Usuário deslogado");
+            })
+            .catch((error) => {
+                alert("Erro ao sair: " + error.message);
+            });
+    }
+};
