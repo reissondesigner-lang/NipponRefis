@@ -300,30 +300,38 @@ let idClienteSendoEditado = null;
 window.editarCliente = async (id) => {
     idClienteSendoEditado = id;
     
-    // Busca os dados atuais do cliente no Firebase
-    const docRef = doc(db, "clientes", id);
-    const docSnap = await getDoc(docRef);
+    try {
+        const docRef = doc(db, "clientes", id);
+        const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-        // Dentro da função editarCliente, onde você preenche os campos:
-const dados = docSnap.data();
-const dataUltima = dados.ultimaTroca.toDate().toISOString().split('T')[0];
-document.getElementById('data-venda').value = dataUltima;
-selecionarModelo(dados.modelo);
-        
-        // Preenche o modal com os dados atuais
-        document.getElementById('nome-cliente').value = dados.nome;
-        document.getElementById('whatsapp-cliente').value = dados.whatsapp;
-        document.getElementById('modelo-refil').value = dados.modelo;
-        document.getElementById('qtd-refil').value = dados.qtd;
-        
-        // Muda o título do modal e o botão
-        document.getElementById('modal-title').innerText = "Editar Cliente";
-        document.getElementById('modal-cliente').classList.remove('hidden');
-        
-        // Ajustamos o botão de salvar para saber que é uma edição
-        const btnSalvar = document.querySelector('.btn-confirm');
-        btnSalvar.onclick = () => finalizarEdicao(id);
+        if (docSnap.exists()) {
+            const dados = docSnap.data();
+            
+            // Preenche os campos de texto
+            document.getElementById('nome-cliente').value = dados.nome || "";
+            document.getElementById('whatsapp-cliente').value = dados.whatsapp || "";
+            document.getElementById('qtd-refil').value = dados.qtd || 1;
+            
+            // Preenche a data (Proteção contra erro)
+            if (dados.ultimaTroca && document.getElementById('data-venda')) {
+                const dataISO = dados.ultimaTroca.toDate().toISOString().split('T')[0];
+                document.getElementById('data-venda').value = dataISO;
+            }
+
+            // Seleciona o modelo nos botões
+            if (document.getElementById('modelo-refil-valor')) {
+                selecionarModelo(dados.modelo || 9);
+            }
+            
+            document.getElementById('modal-title').innerText = "Editar Cliente";
+            document.getElementById('modal-cliente').classList.remove('hidden');
+            
+            const btnSalvar = document.querySelector('.btn-confirm');
+            btnSalvar.onclick = () => finalizarEdicao(id);
+        }
+    } catch (error) {
+        console.error("Erro ao carregar cliente para edição:", error);
+        alert("Erro ao carregar dados do cliente.");
     }
 };
 
