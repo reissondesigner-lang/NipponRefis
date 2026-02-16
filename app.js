@@ -47,22 +47,37 @@ window.logout = () => signOut(auth);
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         usuarioLogado = user;
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const dados = userDoc.data();
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
 
-        if (dados && dados.pago === false) {
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('block-screen').classList.remove('hidden');
+        // Se o documento não existir (usuário novo), criamos um padrão agora
+        if (!userDoc.exists()) {
+            const dadosPadrao = {
+                pago: true,
+                estoque9: 0,
+                estoque12: 0,
+                msgCustom: msgPadrao
+            };
+            await setDoc(userRef, dadosPadrao);
+            atualizarInterfaceEstoque(dadosPadrao);
         } else {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
+            const dados = userDoc.data();
+            
+            // Verifica se está pago
+            if (dados.pago === false) {
+                showBlock();
+                return; // Para a execução aqui
+            }
+
+            // Se chegou aqui, está logado e pago
             msgPadrao = dados.msgCustom || msgPadrao;
             atualizarInterfaceEstoque(dados);
-            renderClientes();
         }
+
+        showApp();
+        renderClientes();
     } else {
-        document.getElementById('login-screen').classList.remove('hidden');
-        document.getElementById('main-app').classList.add('hidden');
+        showLogin();
     }
 });
 
