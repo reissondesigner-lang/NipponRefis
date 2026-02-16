@@ -287,3 +287,73 @@ function showBlock() {
 window.showApp = showApp;
 window.showLogin = showLogin;
 window.showBlock = showBlock;
+
+// --- FUNÇÃO DE EDIÇÃO ---
+
+let idClienteSendoEditado = null;
+
+window.editarCliente = async (id) => {
+    idClienteSendoEditado = id;
+    
+    // Busca os dados atuais do cliente no Firebase
+    const docRef = doc(db, "clientes", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        const dados = docSnap.data();
+        
+        // Preenche o modal com os dados atuais
+        document.getElementById('nome-cliente').value = dados.nome;
+        document.getElementById('whatsapp-cliente').value = dados.whatsapp;
+        document.getElementById('modelo-refil').value = dados.modelo;
+        document.getElementById('qtd-refil').value = dados.qtd;
+        
+        // Muda o título do modal e o botão
+        document.getElementById('modal-title').innerText = "Editar Cliente";
+        document.getElementById('modal-cliente').classList.remove('hidden');
+        
+        // Ajustamos o botão de salvar para saber que é uma edição
+        const btnSalvar = document.querySelector('.btn-confirm');
+        btnSalvar.onclick = () => finalizarEdicao(id);
+    }
+};
+
+async function finalizarEdicao(id) {
+    const nome = document.getElementById('nome-cliente').value;
+    const tel = document.getElementById('whatsapp-cliente').value;
+    const modelo = parseInt(document.getElementById('modelo-refil').value);
+    const qtd = parseInt(document.getElementById('qtd-refil').value);
+
+    const docRef = doc(db, "clientes", id);
+    
+    try {
+        await updateDoc(docRef, {
+            nome: nome,
+            whatsapp: tel,
+            modelo: modelo,
+            qtd: qtd
+        });
+        
+        alert("Dados atualizados!");
+        fecharModal();
+        renderClientes();
+        
+        // Restaura o botão para o modo "Novo Cadastro"
+        const btnSalvar = document.querySelector('.btn-confirm');
+        document.getElementById('modal-title').innerText = "Novo Cliente";
+        btnSalvar.onclick = salvarCliente;
+        
+    } catch (error) {
+        console.error("Erro ao editar:", error);
+    }
+}
+
+// Garante que ao fechar o modal, os campos sejam limpos e o botão resetado
+const originalFecharModal = window.fecharModal;
+window.fecharModal = () => {
+    document.getElementById('nome-cliente').value = "";
+    document.getElementById('whatsapp-cliente').value = "";
+    document.getElementById('modal-title').innerText = "Novo Cliente";
+    document.querySelector('.btn-confirm').onclick = window.salvarCliente;
+    originalFecharModal();
+};
