@@ -161,7 +161,11 @@ window.renderClientes = async () => {
     const lista = document.getElementById('lista-clientes');
     lista.innerHTML = "";
 
-    let hojeCount = 0, atrasadosCount = 0, seteDiasCount = 0;
+    // Contadores de CLIENTES únicos
+    let hojeCount = 0;
+    let atrasadosCount = 0;
+    let seteDiasCount = 0;
+
     const hoje = new Date();
     hoje.setHours(0,0,0,0);
 
@@ -175,15 +179,23 @@ window.renderClientes = async () => {
         const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
 
         let statusClass = "status-ok";
-        if (diffDias < 0) { statusClass = "status-vencido"; atrasadosCount++; }
-        else if (diffDias === 0) { statusClass = "status-hoje"; hojeCount++; }
-        else if (diffDias <= 7) { seteDiasCount++; }
+        
+        // Lógica de contagem por CLIENTE
+        if (diffDias < 0) { 
+            statusClass = "status-vencido"; 
+            atrasadosCount++; // Conta +1 cliente atrasado
+        } else if (diffDias === 0) { 
+            statusClass = "status-hoje"; 
+            hojeCount++; // Conta +1 cliente para hoje
+        } else if (diffDias <= 7) { 
+            seteDiasCount++; // Conta +1 cliente para os próximos 7 dias
+        }
 
         lista.innerHTML += `
             <div class="cliente-card ${statusClass}">
                 <div class="flex justify-between">
                     <div>
-                        <small class="text-gray-400">#${item.modelo == 9 ? 'Alcaline' : 'Max'}</small>
+                        <small class="text-gray-400">#${item.modelo == 9 ? 'Alcaline' : 'Max'} (${item.qtd} refis)</small>
                         <h4 class="font-bold text-navy text-lg">${item.nome}</h4>
                         <p class="text-sm">Próxima: <b>${prox.toLocaleDateString()}</b></p>
                         <p class="text-xs ${diffDias < 0 ? 'text-red-600' : 'text-blue-600'}">
@@ -192,7 +204,7 @@ window.renderClientes = async () => {
                     </div>
                 </div>
                 <div class="mt-4 flex gap-2">
-                    <button onclick="confirmarReposicao('${id}', ${item.modelo})" class="bg-navy text-white flex-1 p-2 rounded text-xs font-bold">REPOSIÇÃO FEITA</button>
+                    <button onclick="confirmarReposicao('${id}', ${item.modelo}, ${item.qtd})" class="bg-navy text-white flex-1 p-2 rounded text-xs font-bold">REPOSIÇÃO FEITA</button>
                     <button onclick="notificar('${item.nome}', '${item.whatsapp}', '${prox.toLocaleDateString()}', '${item.modelo}')" class="bg-green-500 text-white p-2 rounded px-4"><i class="fab fa-whatsapp"></i></button>
                     <button onclick="editarCliente('${id}')" class="bg-gray-200 text-gray-700 p-2 rounded px-3"><i class="fas fa-edit"></i></button>
                 </div>
@@ -200,41 +212,38 @@ window.renderClientes = async () => {
         `;
     });
 
+    // Atualiza os números no topo do app
     document.getElementById('count-hoje').innerText = hojeCount;
     document.getElementById('count-atrasados').innerText = atrasadosCount;
     document.getElementById('count-7dias').innerText = seteDiasCount;
 
-    // Disparar Notificação Interna se houver vencidos
     if (hojeCount > 0) {
-        alert(`Atenção! Você tem ${hojeCount} troca(s) para hoje!`);
+        console.log(`Notificação: ${hojeCount} clientes vencem hoje.`);
     }
 };
 
-window.confirmarReposicao = async (id, modelo) => {
-    const dataManual = confirm("A troca foi feita hoje? Clique em OK para HOJE ou CANCELAR para definir outra data.");
-    let novaDataBase = new Date();
+window.confirmarReposicao = async (id, modelo, qtd) => {
+    if(confirm(`Confirmar reposição de ${qtd} refil(is)?`)) {
+        const novaDataBase = new Date();
+        const novaProxima = new Date();
+        novaProxima.setMonth(novaProxima.getMonth() + modelo);
 
-    if (!dataManual) {
-        const inputData = prompt("Digite a data da troca (AAAA-MM-DD):", new Date().toISOString().split('T')[0]);
-        if (inputData) novaDataBase = new Date(inputData);
+        await updateDoc(doc(db, "clientes", id), {
+            ultimaTroca: novaDataBase,
+            proximaTroca: novaProxima
+        });
+
+        // Baixa no estoque baseada na quantidade real do cliente
+        const userRef = doc(db, "users", usuarioLogado.uid);
+        const userDoc = await getDoc(userRef);
+        const key = modelo === 9 ? 'estoque9' : 'estoque12';
+        const estoqueAtual = userDoc.data()[key] || 0;
+        
+        await updateDoc(userRef, { [key]: estoqueAtual - qtd });
+
+        renderClientes();
+        alert("Estoque atualizado!");
     }
-
-    const novaProxima = new Date(novaDataBase);
-    novaProxima.setMonth(novaProxima.getMonth() + modelo);
-
-    await updateDoc(doc(db, "clientes", id), {
-        ultimaTroca: novaDataBase,
-        proximaTroca: novaProxima
-    });
-
-    // Baixa no estoque
-    const userRef = doc(db, "users", usuarioLogado.uid);
-    const userDoc = await getDoc(userRef);
-    const key = modelo === 9 ? 'estoque9' : 'estoque12';
-    await updateDoc(userRef, { [key]: userDoc.data()[key] - 1 });
-
-    renderClientes();
-    alert("Ciclo atualizado e stock abatido!");
 };
 
 // --- WHATSAPP ---
@@ -339,12 +348,11 @@ async function finalizarEdicao(id) {
     const nome = document.getElementById('nome-cliente').value;
     const tel = document.getElementById('whatsapp-cliente').value;
     const qtd = parseInt(document.getElementById('qtd-refil').value) || 1;
-    const modelo = parseInt(document.getElementById('modelo-refil-valor').value); // ID corrigido aqui
+    const modelo = parseInt(document.getElementById('modelo-refil-valor').value);
     const dataVendaStr = document.getElementById('data-venda').value;
 
     if (!nome || !tel || !dataVendaStr) return alert("Preencha todos os campos!");
 
-    // Converte a data escolhida e recalcula a próxima troca
     const partesData = dataVendaStr.split("-");
     const dataVenda = new Date(partesData[0], partesData[1] - 1, partesData[2]);
     
@@ -354,6 +362,7 @@ async function finalizarEdicao(id) {
     const docRef = doc(db, "clientes", id);
     
     try {
+        // Atualizamos apenas os dados do cliente. O estoque NÃO é mexido aqui.
         await updateDoc(docRef, {
             nome: nome,
             whatsapp: tel,
@@ -363,18 +372,16 @@ async function finalizarEdicao(id) {
             proximaTroca: proxima
         });
         
-        alert("Dados atualizados com sucesso!");
+        alert("Dados atualizados!");
         fecharModal();
         renderClientes();
         
-        // Reseta o botão para o modo de novo cadastro
         const btnSalvar = document.querySelector('.btn-confirm');
         document.getElementById('modal-title').innerText = "Novo Cliente";
         btnSalvar.onclick = salvarCliente;
         
     } catch (error) {
         console.error("Erro ao editar:", error);
-        alert("Ocorreu um erro ao atualizar os dados.");
     }
 }
 
