@@ -101,28 +101,43 @@
         </main>
     </div>
 
-    <div id="modal-cliente" class="modal hidden">
-    <div class="modal-content text-navy">
-        <h3 id="modal-title" class="font-bold text-lg mb-2">Novo Cliente</h3>
-        
-        <label class="text-xs font-bold">DATA DA VENDA/TROCA:</label>
-        <input type="date" id="data-venda">
-        <input type="hidden" id="modelo-refil-valor" value="9">
-        <input type="text" id="nome-cliente" placeholder="Nome Completo">
-        <input type="tel" id="whatsapp-cliente" placeholder="WhatsApp (DDD + Número)">
-        
-        <label class="text-xs font-bold">MODELO DO REFIL:</label>
-        <div class="flex gap-2 mb-3">
-            <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model flex-1 p-2 border rounded border-navy text-navy font-bold text-xs">ALCALINE (9m)</button>
-            <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model flex-1 p-2 border rounded border-navy text-navy font-bold text-xs">MAX (1 ano)</button>
+ <div id="modal-cliente" class="modal-overlay hidden">
+    <div class="modal-card">
+        <h2 id="modal-title">Novo Cliente</h2>
+        <p>Preencha os dados abaixo para organizar as trocas de refil.</p>
+
+        <div class="form-group">
+            <label>NOME DO CLIENTE</label>
+            <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
         </div>
 
-        <label class="text-xs font-bold">QUANTIDADE:</label>
-        <input type="number" id="qtd-refil" value="1" min="1">
+        <div class="form-group">
+            <label>WHATSAPP</label>
+            <input type="tel" id="whatsapp-cliente" placeholder="DDD + Número">
+        </div>
 
-        <div class="modal-actions mt-4">
-            <button onclick="salvarCliente()" class="btn-confirm w-full mb-2">SALVAR</button>
-            <button onclick="fecharModal()" class="btn-cancel w-full">CANCELAR</button>
+        <div class="form-group">
+            <label>DATA DA ÚLTIMA TROCA / VENDA</label>
+            <input type="date" id="data-venda">
+        </div>
+
+        <div class="form-group">
+            <label>MODELO DO REFIL</label>
+            <div class="buttons-row">
+                <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model flex-1">ALCALINE (9m)</button>
+                <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model flex-1">MAX (1 ano)</button>
+            </div>
+            <input type="hidden" id="modelo-refil-valor" value="9">
+        </div>
+
+        <div class="form-group">
+            <label>QUANTIDADE</label>
+            <input type="number" id="qtd-refil" value="1" min="1">
+        </div>
+
+        <div class="buttons-row">
+            <button onclick="salvarCliente()" class="btn btn-confirm">SALVAR</button>
+            <button onclick="fecharModal()" class="btn btn-close">CANCELAR</button>
         </div>
     </div>
 </div>
