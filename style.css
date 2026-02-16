@@ -234,3 +234,18 @@ body.modal-open {
     color: #ddd;
     cursor: pointer;
 }
+
+
+#login-screen.active {
+    display: flex !important; /* Força o flexbox quando ativo */
+    justify-content: center;   /* Centraliza horizontalmente */
+    align-items: center;       /* Centraliza verticalmente */
+    height: 100vh;            /* Ocupa toda a altura da janela */
+    width: 100vw;             /* Ocupa toda a largura da janela */
+    position: fixed;          /* Garante que fique sobreposto a qualquer resquício de outra tela */
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    z-index: 100;             /* Fica acima de tudo */
+}
