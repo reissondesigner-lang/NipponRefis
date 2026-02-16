@@ -53,16 +53,24 @@
     </button>
 </div>
 
-<div id="modal-config" class="modal hidden">
-    <div class="modal-content">
-        <h3 class="font-bold text-navy mb-4">Configurações</h3>
-        
-        <label class="text-xs font-bold">MENSAGEM DE AVISO:</label>
-        <textarea id="msg-custom-input" rows="6" class="w-full border p-2 rounded text-sm mb-4"></textarea>
-        <p class="text-[10px] text-gray-500 mb-4">* Use [NOME], [MODELO] e [DATA] para preenchimento automático.</p>
+<div id="modal-config" class="modal-overlay hidden">
+    <div class="modal-card">
+        <h2>Configurações</h2>
+        <p>Personalize a mensagem automática que será enviada para o cliente.</p>
 
-        <button onclick="salvarConfiguracoes()" class="btn-confirm w-full mb-2">SALVAR CONFIGURAÇÕES</button>
-        <button onclick="fecharConfig()" class="btn-cancel w-full">FECHAR</button>
+        <div class="form-group">
+            <label>MENSAGEM DE AVISO</label>
+            <textarea id="msg-custom-input" rows="6" 
+                style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none;"></textarea>
+            <p style="font-size: 10px; text-align: left; margin-top: 5px;">
+                * Use [NOME], [MODELO] e [DATA] para preenchimento automático.
+            </p>
+        </div>
+
+        <div class="buttons-row">
+            <button onclick="salvarConfiguracoes()" class="btn btn-confirm">SALVAR MENSAGEM</button>
+            <button onclick="fecharConfig()" class="btn btn-close">CANCELAR</button>
+        </div>
     </div>
 </div>
                 <span class="brand">NIPPON<b>SYNC</b></span>
@@ -142,20 +150,27 @@
     </div>
 </div>
 
-    <div id="modal-estoque" class="modal hidden">
-        <div class="modal-content">
-            <h3>Meu Estoque</h3>
-            <div class="item-estoque">
-                <label>Alcaline (9m):</label>
-                <input type="number" id="stock-9" onchange="atualizarEstoqueLocal()">
-            </div>
-            <div class="item-estoque">
-                <label>Alcaline Max (1a):</label>
-                <input type="number" id="stock-12" onchange="atualizarEstoqueLocal()">
-            </div>
-            <button onclick="fecharEstoque()" class="btn-primary">FECHAR</button>
+   <div id="modal-estoque" class="modal-overlay hidden">
+    <div class="modal-card">
+        <h2>Meu Estoque</h2>
+        <p>Atualize a quantidade de refis que você tem em mãos.</p>
+
+        <div class="form-group">
+            <label>ALCALINE (9 meses)</label>
+            <input type="number" id="stock-9" placeholder="0" min="0">
+        </div>
+
+        <div class="form-group">
+            <label>MAX (1 ano)</label>
+            <input type="number" id="stock-12" placeholder="0" min="0">
+        </div>
+
+        <div class="buttons-row">
+            <button onclick="atualizarEstoqueLocal()" class="btn btn-confirm">SALVAR ESTOQUE</button>
+            <button onclick="fecharEstoque()" class="btn btn-close">FECHAR</button>
         </div>
     </div>
+</div>
 
     <div id="modal-msg" class="modal hidden">
         <div class="modal-content">
