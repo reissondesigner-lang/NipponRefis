@@ -100,26 +100,31 @@ window.fecharModal = () => document.getElementById('modal-cliente').classList.ad
 window.salvarCliente = async () => {
     const nome = document.getElementById('nome-cliente').value;
     const tel = document.getElementById('whatsapp-cliente').value;
-    const modelo = parseInt(document.getElementById('modelo-refil').value);
+    const modelo = parseInt(document.getElementById('modelo-refil-valor').value); // Pega do hidden input
     const qtd = parseInt(document.getElementById('qtd-refil').value) || 1;
+    const dataVendaStr = document.getElementById('data-venda').value; // Pega a data do campo
 
-    if (!nome || !tel) return alert("Preencha o nome e o WhatsApp!");
+    if (!nome || !tel || !dataVendaStr) return alert("Preencha todos os campos!");
 
-    const dataHoje = new Date();
-    const proxima = new Date();
+    // Converte a string da data para objeto Date
+    const partesData = dataVendaStr.split("-");
+    const dataVenda = new Date(partesData[0], partesData[1] - 1, partesData[2]);
+    
+    // Calcula a próxima troca com base na data escolhida
+    const proxima = new Date(dataVenda);
     proxima.setMonth(proxima.getMonth() + modelo);
 
     try {
-        // 1. Salvar o Cliente
         await addDoc(collection(db, "clientes"), {
             userId: usuarioLogado.uid,
             nome,
             whatsapp: tel,
             modelo,
             qtd,
-            ultimaTroca: dataHoje,
+            ultimaTroca: dataVenda,
             proximaTroca: proxima
         });
+        
 
         // 2. Atualizar o Estoque com proteção contra undefined
         const userRef = doc(db, "users", usuarioLogado.uid);
@@ -300,7 +305,11 @@ window.editarCliente = async (id) => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        const dados = docSnap.data();
+        // Dentro da função editarCliente, onde você preenche os campos:
+const dados = docSnap.data();
+const dataUltima = dados.ultimaTroca.toDate().toISOString().split('T')[0];
+document.getElementById('data-venda').value = dataUltima;
+selecionarModelo(dados.modelo);
         
         // Preenche o modal com os dados atuais
         document.getElementById('nome-cliente').value = dados.nome;
@@ -356,4 +365,23 @@ window.fecharModal = () => {
     document.getElementById('modal-title').innerText = "Novo Cliente";
     document.querySelector('.btn-confirm').onclick = window.salvarCliente;
     originalFecharModal();
+};
+
+// Função para marcar o botão selecionado
+window.selecionarModelo = (meses) => {
+    document.getElementById('modelo-refil-valor').value = meses;
+    
+    // Remove classe ativa de todos e adiciona no clicado
+    document.querySelectorAll('.btn-model').forEach(btn => btn.classList.remove('btn-model-active'));
+    if(meses === 9) document.getElementById('btn-9m').classList.add('btn-model-active');
+    else document.getElementById('btn-12m').classList.add('btn-model-active');
+};
+
+// Modifique o abrirModalCadastro para setar a data de hoje automaticamente
+const originalAbrirModal = window.abrirModalCadastro;
+window.abrirModalCadastro = () => {
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('data-venda').value = hoje;
+    selecionarModelo(9); // Default 9 meses
+    originalAbrirModal();
 };
