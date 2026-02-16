@@ -161,11 +161,7 @@ window.renderClientes = async () => {
     const lista = document.getElementById('lista-clientes');
     lista.innerHTML = "";
 
-    // Contadores de CLIENTES únicos
-    let hojeCount = 0;
-    let atrasadosCount = 0;
-    let seteDiasCount = 0;
-
+    let hojeCount = 0, atrasadosCount = 0, seteDiasCount = 0;
     const hoje = new Date();
     hoje.setHours(0,0,0,0);
 
@@ -174,43 +170,48 @@ window.renderClientes = async () => {
         const id = d.id;
         const prox = item.proximaTroca.toDate();
         prox.setHours(0,0,0,0);
-        
-        const diffTempo = prox - hoje;
-        const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
+        const diffDias = Math.ceil((prox - hoje) / (1000 * 60 * 60 * 24));
 
-        let statusClass = "status-ok";
-        
-        // Lógica de contagem por CLIENTE
-        if (diffDias < 0) { 
-            statusClass = "status-vencido"; 
-            atrasadosCount++; // Conta +1 cliente atrasado
-        } else if (diffDias === 0) { 
-            statusClass = "status-hoje"; 
-            hojeCount++; // Conta +1 cliente para hoje
-        } else if (diffDias <= 7) { 
-            seteDiasCount++; // Conta +1 cliente para os próximos 7 dias
-        }
+        let statusClass = diffDias < 0 ? "status-vencido" : (diffDias === 0 ? "status-hoje" : "status-ok");
+        if (diffDias < 0) atrasadosCount++;
+        else if (diffDias === 0) hojeCount++;
+        else if (diffDias <= 7) seteDiasCount++;
 
         lista.innerHTML += `
             <div class="cliente-card ${statusClass}">
-                <div class="flex justify-between">
+                <div class="card-header-row">
+                    <div class="cliente-info">
+                        <h4 style="margin:0; color: var(--azul-marinho); font-size: 1.1rem;">${item.nome}</h4>
+                        <small style="color: #666;">${item.modelo == 9 ? 'Alcaline' : 'Max'} (${item.qtd} refil)</small>
+                    </div>
+                    <div class="cliente-acoes">
+                        <button onclick="notificar('${item.nome}', '${item.whatsapp}', '${prox.toLocaleDateString()}', '${item.modelo}')" class="btn-round btn-wpp">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button onclick="editarCliente('${id}')" class="btn-round btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <small class="text-gray-400">#${item.modelo == 9 ? 'Alcaline' : 'Max'} (${item.qtd} refis)</small>
-                        <h4 class="font-bold text-navy text-lg">${item.nome}</h4>
-                        <p class="text-sm">Próxima: <b>${prox.toLocaleDateString()}</b></p>
-                        <p class="text-xs ${diffDias < 0 ? 'text-red-600' : 'text-blue-600'}">
+                        <p style="margin:0; font-size: 13px;">Troca: <b>${prox.toLocaleDateString()}</b></p>
+                        <p style="margin:0; font-size: 11px;" class="${diffDias <= 0 ? 'text-red-500' : ''}">
                             ${diffDias < 0 ? 'Atrasado há ' + Math.abs(diffDias) : 'Faltam ' + diffDias} dias
                         </p>
                     </div>
-                </div>
-                <div class="mt-4 flex gap-2">
-                    <button onclick="confirmarReposicao('${id}', ${item.modelo}, ${item.qtd})" class="bg-navy text-white flex-1 p-2 rounded text-xs font-bold">REPOSIÇÃO FEITA</button>
-                    <button onclick="notificar('${item.nome}', '${item.whatsapp}', '${prox.toLocaleDateString()}', '${item.modelo}')" class="bg-green-500 text-white p-2 rounded px-4"><i class="fab fa-whatsapp"></i></button>
-                    <button onclick="editarCliente('${id}')" class="bg-gray-200 text-gray-700 p-2 rounded px-3"><i class="fas fa-edit"></i></button>
+                    <button onclick="confirmarReposicao('${id}', ${item.modelo}, ${item.qtd})" class="btn-round btn-repo">
+                        REPOSIÇÃO
+                    </button>
                 </div>
             </div>
         `;
     });
+
+    document.getElementById('count-hoje').innerText = hojeCount;
+    document.getElementById('count-atrasados').innerText = atrasadosCount;
+    document.getElementById('count-7dias').innerText = seteDiasCount;
+};
 
     // Atualiza os números no topo do app
     document.getElementById('count-hoje').innerText = hojeCount;
