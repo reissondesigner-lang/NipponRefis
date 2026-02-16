@@ -155,11 +155,15 @@ window.abrirModalCadastro = () => {
     window.scrollTo(0, 0);
     document.body.classList.add('modal-open');
     document.getElementById('modal-cliente').classList.remove('hidden');
+    document.getElementById('modal-cliente').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
 };
 
 window.fecharModal = () => {
     document.getElementById('modal-cliente').classList.add('hidden');
     document.body.classList.remove('modal-open'); // Libera o scroll da página
+    document.getElementById('modal-cliente').classList.add('hidden');
+    document.body.style.overflow = 'auto'; // Libera o scroll
 };
 
 window.salvarCliente = async () => {
