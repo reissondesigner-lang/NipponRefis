@@ -281,21 +281,21 @@ function atualizarInterfaceEstoque(dados) {
 // --- FUNÇÕES DE NAVEGAÇÃO DE TELAS ---
 
 function showApp() {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('block-screen').classList.add('hidden');
-    document.getElementById('main-app').classList.remove('hidden');
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('main-app').classList.add('active');
+    document.getElementById('block-screen').classList.remove('active');
 }
 
 function showLogin() {
-    document.getElementById('login-screen').classList.remove('hidden');
-    document.getElementById('block-screen').classList.add('hidden');
-    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('login-screen').classList.add('active');
+    document.getElementById('main-app').classList.remove('active');
+    document.getElementById('block-screen').classList.remove('active');
 }
 
 function showBlock() {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('main-app').classList.add('hidden');
-    document.getElementById('block-screen').classList.remove('hidden');
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('main-app').classList.remove('active');
+    document.getElementById('block-screen').classList.add('active');
 }
 
 // Tornando as funções acessíveis para o HTML se necessário
