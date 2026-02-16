@@ -22,8 +22,10 @@ window.handleLogin = () => {
 window.handleSignup = () => {
     const e = document.getElementById('email').value;
     const s = document.getElementById('password').value;
+    
+    if (!e || !s) return alert("Preencha e-mail e senha!");
+
     createUserWithEmailAndPassword(auth, e, s).then(async (cred) => {
-        // Cria o perfil do distribuidor com acesso ativo por 7 dias (teste)
         await setDoc(doc(db, "users", cred.user.uid), {
             pago: true,
             estoque9: 0,
@@ -31,9 +33,15 @@ window.handleSignup = () => {
             nomeNegocio: "Distribuidor Nipponflex",
             msgCustom: msgPadrao
         });
-    }).catch(err => alert("Erro ao cadastrar: " + err.message));
+        alert("Conta criada com sucesso!");
+    }).catch(err => {
+        if (err.code === 'auth/email-already-in-use') {
+            alert("Este e-mail já está cadastrado! Tente fazer login.");
+        } else {
+            alert("Erro ao cadastrar: " + err.message);
+        }
+    });
 };
-
 window.logout = () => signOut(auth);
 
 onAuthStateChanged(auth, async (user) => {
