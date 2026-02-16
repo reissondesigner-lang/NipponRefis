@@ -32,6 +32,24 @@
     <div id="main-app" class="screen hidden">
         <header class="app-header">
             <div class="header-content">
+                <div class="p-4 flex gap-2">
+    <button onclick="abrirConfiguracoes()" class="flex-1 bg-gray-200 text-navy p-2 rounded-lg text-xs font-bold">
+        <i class="fas fa-cog"></i> CONFIGURAÇÕES
+    </button>
+</div>
+
+<div id="modal-config" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="font-bold text-navy mb-4">Configurações</h3>
+        
+        <label class="text-xs font-bold">MENSAGEM DE AVISO:</label>
+        <textarea id="msg-custom-input" rows="6" class="w-full border p-2 rounded text-sm mb-4"></textarea>
+        <p class="text-[10px] text-gray-500 mb-4">* Use [NOME], [MODELO] e [DATA] para preenchimento automático.</p>
+
+        <button onclick="salvarConfiguracoes()" class="btn-confirm w-full mb-2">SALVAR CONFIGURAÇÕES</button>
+        <button onclick="fecharConfig()" class="btn-cancel w-full">FECHAR</button>
+    </div>
+</div>
                 <span class="brand">NIPPON<b>SYNC</b></span>
                 <div class="header-icons">
                     <div class="icon-group" onclick="abrirEstoque()">
