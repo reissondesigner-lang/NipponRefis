@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NipponRefis - Gestão de Refil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --navy: #002344; --silver: #C0C0C0; }
+        body { background-color: #f4f7f6; font-family: sans-serif; }
+        .bg-navy { background-color: var(--navy); }
+        .text-navy { color: var(--navy); }
+        .card-atrasado { border-left: 5px solid #ef4444; }
+        .card-hoje { border-left: 5px solid #f59e0b; }
+        .card-ok { border-left: 5px solid #10b981; }
+    </style>
+</head>
+<body>
+
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-navy">NIPPON<span class="text-blue-500">REFIS</span></h1>
+            <p class="text-gray-500 text-sm">Gestão Profissional de Refis</p>
+        </div>
+        <input type="email" id="email" placeholder="E-mail" class="w-full p-3 mb-4 border rounded">
+        <input type="password" id="password" placeholder="Senha" class="w-full p-3 mb-6 border rounded">
+        <button onclick="handleLogin()" class="w-full bg-navy text-white p-3 rounded font-bold">Entrar</button>
+        <p class="text-center mt-4 text-sm text-blue-600 cursor-pointer" onclick="handleSignup()">Criar Nova Conta</p>
+    </div>
+</div>
+
+<div id="block-screen" class="hidden min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+    <i class="fas fa-lock text-6xl text-red-500 mb-4"></i>
+    <h2 class="text-2xl font-bold mb-2">Acesso Bloqueado</h2>
+    <p class="mb-6">Sua mensalidade está pendente. Regularize para continuar usando.</p>
+    <button onclick="window.location.href='https://wa.me/SEU_NUMERO'" class="bg-green-500 text-white px-6 py-3 rounded-full font-bold">
+        <i class="fab fa-whatsapp mr-2"></i> LIBERAR ACESSO
+    </button>
+</div>
+
+<div id="main-app" class="hidden">
+    <nav class="bg-navy p-4 text-white flex justify-between items-center shadow-lg">
+        <span class="font-bold">NipponRefis</span>
+        <div class="flex gap-4">
+            <i class="fas fa-box cursor-pointer" onclick="toggleEstoque()"> <span id="badge-estoque" class="text-xs bg-red-500 px-1 rounded">0</span></i>
+            <i class="fas fa-sign-out-alt cursor-pointer" onclick="logout()"></i>
+        </div>
+    </nav>
+
+    <div class="p-4 max-w-lg mx-auto">
+        <button onclick="openModal()" class="w-full bg-blue-600 text-white p-4 rounded-xl shadow-md mb-6 font-bold uppercase">
+            <i class="fas fa-plus mr-2"></i> Novo Cadastro
+        </button>
+
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-white p-3 rounded shadow text-center">
+                <p class="text-xs text-gray-500 uppercase">Vence Hoje</p>
+                <p id="count-hoje" class="text-xl font-bold text-orange-500">0</p>
+            </div>
+            <div class="bg-white p-3 rounded shadow text-center">
+                <p class="text-xs text-gray-500 uppercase">Atrasados</p>
+                <p id="count-atrasados" class="text-xl font-bold text-red-500">0</p>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-navy mb-4"><i class="fas fa-users mr-2"></i> Lista de Clientes</h3>
+        <div id="lista-clientes" class="space-y-4">
+            </div>
+    </div>
+</div>
+
+<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4">Cadastrar Cliente</h2>
+        <input type="text" id="cust-name" placeholder="Nome do Cliente" class="w-full p-2 mb-3 border rounded">
+        <input type="tel" id="cust-phone" placeholder="WhatsApp (com DDD)" class="w-full p-2 mb-3 border rounded">
+        
+        <label class="block text-sm font-bold mb-1">Modelo de Refil:</label>
+        <select id="cust-model" class="w-full p-2 mb-3 border rounded">
+            <option value="9">Alcaline (9 meses)</option>
+            <option value="12">Alcaline Max (1 ano)</option>
+        </select>
+
+        <div class="flex gap-2 mb-4">
+            <button onclick="saveClient()" class="flex-1 bg-navy text-white p-3 rounded font-bold">Salvar</button>
+            <button onclick="closeModal()" class="flex-1 bg-gray-200 p-3 rounded font-bold">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBbX57rW9ws4j28LxIVr4KM1CGxqghm4_8",
+  authDomain: "nipponrefis.firebaseapp.com",
+  projectId: "nipponrefis",
+  storageBucket: "nipponrefis.firebasestorage.app",
+  messagingSenderId: "714981606481",
+  appId: "1:714981606481:web:be99b6ebd430231c212470"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // FUNÇÕES DE TELA
+    window.handleLogin = () => {
+        const e = document.getElementById('email').value;
+        const s = document.getElementById('password').value;
+        signInWithEmailAndPassword(auth, e, s).catch(err => alert("Erro: " + err.message));
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if(userDoc.exists() && userDoc.data().pago === false) {
+                showBlock();
+            } else {
+                showApp();
+                renderClientes();
+            }
+        } else {
+            showLogin();
+        }
+    });
+
+    window.saveClient = async () => {
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const meses = parseInt(document.getElementById('cust-model').value);
+        const proximaTroca = new Date();
+        proximaTroca.setMonth(proximaTroca.getMonth() + meses);
+
+        await addDoc(collection(db, "clientes"), {
+            userId: auth.currentUser.uid,
+            nome: name,
+            whatsapp: phone,
+            modelo: meses,
+            dataUltimaTroca: new Date(),
+            dataProximaTroca: proximaTroca
+        });
+        closeModal();
+        renderClientes();
+    };
+
+    window.renderClientes = async () => {
+        const q = query(collection(db, "clientes"), where("userId", "==", auth.currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        const lista = document.getElementById('lista-clientes');
+        lista.innerHTML = "";
+        
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const hoje = new Date();
+            const prox = data.dataProximaTroca.toDate();
+            const diff = Math.ceil((prox - hoje) / (1000 * 60 * 60 * 24));
+            
+            const cardClass = diff < 0 ? 'card-atrasado' : (diff <= 7 ? 'card-hoje' : 'card-ok');
+
+            lista.innerHTML += `
+                <div class="bg-white p-4 rounded-lg shadow ${cardClass}">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-navy">${data.nome}</h4>
+                            <p class="text-xs text-gray-500">Refil: ${data.modelo == 9 ? 'Alcaline' : 'Alcaline Max'}</p>
+                            <p class="text-sm mt-1">Troca em: <b>${prox.toLocaleDateString()}</b> (${diff} dias)</p>
+                        </div>
+                        <button onclick="reposicao('${doc.id}', ${data.modelo})" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Reposição Feita</button>
+                    </div>
+                    <div class="mt-3 flex gap-2">
+                        <a href="https://wa.me/${data.whatsapp}" class="bg-blue-50 text-blue-600 flex-1 text-center p-2 rounded text-sm"><i class="fab fa-whatsapp"></i> Notificar</a>
+                        <button class="bg-gray-100 text-gray-600 px-3 rounded text-sm"><i class="fas fa-edit"></i></button>
+                    </div>
+                </div>
+            `;
+        });
+    };
+
+    window.reposicao = async (id, meses) => {
+        if(confirm("Confirmar reposição realizada hoje?")) {
+            const novaData = new Date();
+            const prox = new Date();
+            prox.setMonth(prox.getMonth() + meses);
+            await updateDoc(doc(db, "clientes", id), {
+                dataUltimaTroca: novaData,
+                dataProximaTroca: prox
+            });
+            renderClientes();
+        }
+    };
+
+    // Auxiliares
+    window.showApp = () => { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-app').classList.remove('hidden'); };
+    window.showLogin = () => { document.getElementById('login-screen').classList.remove('hidden'); document.getElementById('main-app').classList.add('hidden'); };
+    window.showBlock = () => { document.getElementById('main-app').classList.add('hidden'); document.getElementById('block-screen').classList.remove('hidden'); };
+    window.openModal = () => document.getElementById('modal').classList.remove('hidden');
+    window.closeModal = () => document.getElementById('modal').classList.add('hidden');
+    window.logout = () => signOut(auth);
+</script>
+</body>
+</html>
