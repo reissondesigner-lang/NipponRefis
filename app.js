@@ -90,34 +90,53 @@ window.salvarCliente = async () => {
     const nome = document.getElementById('nome-cliente').value;
     const tel = document.getElementById('whatsapp-cliente').value;
     const modelo = parseInt(document.getElementById('modelo-refil').value);
-    const qtd = parseInt(document.getElementById('qtd-refil').value);
+    const qtd = parseInt(document.getElementById('qtd-refil').value) || 1;
+
+    if (!nome || !tel) return alert("Preencha o nome e o WhatsApp!");
 
     const dataHoje = new Date();
     const proxima = new Date();
     proxima.setMonth(proxima.getMonth() + modelo);
 
-    await addDoc(collection(db, "clientes"), {
-        userId: usuarioLogado.uid,
-        nome,
-        whatsapp: tel,
-        modelo,
-        qtd,
-        ultimaTroca: dataHoje,
-        proximaTroca: proxima
-    });
+    try {
+        // 1. Salvar o Cliente
+        await addDoc(collection(db, "clientes"), {
+            userId: usuarioLogado.uid,
+            nome,
+            whatsapp: tel,
+            modelo,
+            qtd,
+            ultimaTroca: dataHoje,
+            proximaTroca: proxima
+        });
 
-    // Abater do estoque
-    const userRef = doc(db, "users", usuarioLogado.uid);
-    const userDoc = await getDoc(userRef);
-    if (modelo === 9) {
-        await updateDoc(userRef, { estoque9: userDoc.data().estoque9 - qtd });
-    } else {
-        await updateDoc(userRef, { estoque12: userDoc.data().estoque12 - qtd });
+        // 2. Atualizar o Estoque com proteção contra undefined
+        const userRef = doc(db, "users", usuarioLogado.uid);
+        const userDoc = await getDoc(userRef);
+        const dadosAtuais = userDoc.data() || {};
+        
+        // Se o campo não existir, assume 0 e subtrai a quantidade
+        const estoqueAtual9 = dadosAtuais.estoque9 || 0;
+        const estoqueAtual12 = dadosAtuais.estoque12 || 0;
+
+        if (modelo === 9) {
+            await updateDoc(userRef, { estoque9: estoqueAtual9 - qtd });
+        } else {
+            await updateDoc(userRef, { estoque12: estoqueAtual12 - qtd });
+        }
+
+        fecharModal();
+        renderClientes();
+        
+        // Atualiza os inputs de estoque na tela caso o modal de estoque esteja aberto
+        const userDocAtualizado = await getDoc(userRef);
+        atualizarInterfaceEstoque(userDocAtualizado.data());
+        
+        alert("Cliente cadastrado com sucesso!");
+    } catch (error) {
+        console.error("Erro ao salvar:", error);
+        alert("Erro ao salvar dados. Verifique sua conexão.");
     }
-
-    fecharModal();
-    renderClientes();
-    alert("Cliente cadastrado e stock atualizado!");
 };
 
 window.renderClientes = async () => {
