@@ -338,8 +338,18 @@ window.editarCliente = async (id) => {
 async function finalizarEdicao(id) {
     const nome = document.getElementById('nome-cliente').value;
     const tel = document.getElementById('whatsapp-cliente').value;
-    const modelo = parseInt(document.getElementById('modelo-refil').value);
-    const qtd = parseInt(document.getElementById('qtd-refil').value);
+    const qtd = parseInt(document.getElementById('qtd-refil').value) || 1;
+    const modelo = parseInt(document.getElementById('modelo-refil-valor').value); // ID corrigido aqui
+    const dataVendaStr = document.getElementById('data-venda').value;
+
+    if (!nome || !tel || !dataVendaStr) return alert("Preencha todos os campos!");
+
+    // Converte a data escolhida e recalcula a próxima troca
+    const partesData = dataVendaStr.split("-");
+    const dataVenda = new Date(partesData[0], partesData[1] - 1, partesData[2]);
+    
+    const proxima = new Date(dataVenda);
+    proxima.setMonth(proxima.getMonth() + modelo);
 
     const docRef = doc(db, "clientes", id);
     
@@ -348,20 +358,23 @@ async function finalizarEdicao(id) {
             nome: nome,
             whatsapp: tel,
             modelo: modelo,
-            qtd: qtd
+            qtd: qtd,
+            ultimaTroca: dataVenda,
+            proximaTroca: proxima
         });
         
-        alert("Dados atualizados!");
+        alert("Dados atualizados com sucesso!");
         fecharModal();
         renderClientes();
         
-        // Restaura o botão para o modo "Novo Cadastro"
+        // Reseta o botão para o modo de novo cadastro
         const btnSalvar = document.querySelector('.btn-confirm');
         document.getElementById('modal-title').innerText = "Novo Cliente";
         btnSalvar.onclick = salvarCliente;
         
     } catch (error) {
         console.error("Erro ao editar:", error);
+        alert("Ocorreu um erro ao atualizar os dados.");
     }
 }
 
