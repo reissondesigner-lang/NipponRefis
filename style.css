@@ -135,14 +135,16 @@ input {
 
 /* Garante que o modal fique fixo no meio da tela do celular */
 .modal {
-    position: fixed; /* Fixa na tela, ignora o scroll */
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7); /* Fundo escuro atrás */
+    position: fixed; /* Isso faz o modal "flutuar" na frente da tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
     display: flex;
-    align-items: center; /* Centraliza vertical */
-    justify-content: center; /* Centraliza horizontal */
-    z-index: 9999; /* Fica acima de tudo */
-    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
 }
 
 .modal-content {
