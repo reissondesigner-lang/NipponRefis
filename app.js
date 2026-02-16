@@ -262,3 +262,28 @@ function atualizarInterfaceEstoque(dados) {
     document.getElementById('stock-12').value = dados.estoque12 || 0;
     document.getElementById('estoque-badge').innerText = (dados.estoque9 || 0) + (dados.estoque12 || 0);
 }
+
+// --- FUNÇÕES DE NAVEGAÇÃO DE TELAS ---
+
+function showApp() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('block-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+}
+
+function showLogin() {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('block-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.add('hidden');
+}
+
+function showBlock() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('block-screen').classList.remove('hidden');
+}
+
+// Tornando as funções acessíveis para o HTML se necessário
+window.showApp = showApp;
+window.showLogin = showLogin;
+window.showBlock = showBlock;
