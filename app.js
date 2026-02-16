@@ -34,12 +34,21 @@ function showBlock() {
 }
 // --- FUNÇÕES DE INTERFACE (ESTOQUE E CONFIG) ---
 
-window.abrirEstoque = () => {
+window.abrirEstoque = async () => {
+    // Busca os dados atuais do usuário para preencher os inputs
+    const userDoc = await getDoc(doc(db, "users", usuarioLogado.uid));
+    if (userDoc.exists()) {
+        const d = userDoc.data();
+        document.getElementById('stock-9').value = d.estoque9 || 0;
+        document.getElementById('stock-12').value = d.estoque12 || 0;
+    }
     document.getElementById('modal-estoque').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
 };
 
 window.fecharEstoque = () => {
     document.getElementById('modal-estoque').classList.add('hidden');
+    document.body.style.overflow = 'auto';
 };
 
 window.abrirConfiguracoes = () => {
@@ -50,6 +59,7 @@ window.abrirConfiguracoes = () => {
 
 window.fecharConfig = () => {
     document.getElementById('modal-config').classList.add('hidden');
+    document.body.style.overflow = 'auto';
 };
 
 window.salvarConfiguracoes = async () => {
