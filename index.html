@@ -10,15 +10,30 @@
 <body>
 
     <div id="login-screen" class="screen active">
-        <div class="auth-card">
-            <h1 class="logo">NIPPON<span>SYNC</span></h1>
-            <p class="subtitle">Gestão de Saúde e Pós-Venda</p>
-            <input type="email" id="email" placeholder="Seu e-mail profissional">
-            <input type="password" id="password" placeholder="Sua senha">
-            <button onclick="handleLogin()" class="btn-primary">ENTRAR</button>
-            <button onclick="handleSignup()" class="btn-secondary">CADASTRAR DISTRIBUIDOR</button>
+    <div class="login-container">
+        <div class="logo">
+            <span style="font-weight: 500; color: #e54848;">Nippon</span><span style="color: #fff;">Sync</span>
+        </div>
+
+        <div class="input-group">
+            <input type="email" id="email" placeholder="E-mail">
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Senha">
+        </div>
+
+        <button onclick="handleLogin()" style="margin-bottom: 10px;">ENTRAR</button>
+        
+        <p style="color: #ddd; font-size: 12px; margin-top: 10px; cursor: pointer;" onclick="handleSignup()">
+            Não tem conta? Cadastre-se
+        </p>
+
+        <div class="forgot" onclick="alert('Entre em contato com o suporte para resetar sua senha.')">
+            Esqueci a senha
         </div>
     </div>
+</div>
 
     <div id="block-screen" class="screen">
         <div class="block-card">
