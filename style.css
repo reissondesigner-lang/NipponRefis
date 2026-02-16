@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
 :root {
     --azul-claro: #00a8d0;
     --azul-marinho: #0a4c96;
@@ -161,4 +163,74 @@ input {
 /* Evita que o corpo da página role quando o modal estiver aberto */
 body.modal-open {
     overflow: hidden;
+}
+/* Importando a fonte do seu modelo */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+/* Estilo específico para a tela de login */
+#login-screen {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #020a4a, #051c63, #007bff);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.login-container {
+    width: 340px;
+    padding: 40px;
+    background: #003172;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 5px; /* Ajustei para 5px para ficar mais moderno */
+    border: 1px solid #ffffff;
+    background: transparent;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: rgba(255,255,255,0.8);
+}
+
+/* Botão de Entrar (Vermelho do modelo) */
+#login-screen button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #e54848;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#login-screen button:hover {
+    background: #c83c3c;
+}
+
+.forgot {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #ddd;
+    cursor: pointer;
 }
