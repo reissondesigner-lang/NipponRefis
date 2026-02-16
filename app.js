@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
+import { orderBy } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -132,13 +133,17 @@ window.selecionarModelo = (meses) => {
     else document.getElementById('btn-12m').classList.add('btn-model-active');
 };
 
+const originalAbrirModal = window.abrirModalCadastro;
 window.abrirModalCadastro = () => {
-    document.getElementById('data-venda').value = new Date().toISOString().split('T')[0];
-    selecionarModelo(9);
-    document.getElementById('modal-cliente').classList.remove('hidden');
+    document.body.classList.add('modal-open'); // Trava o scroll da página
+    window.scrollTo(0, 0); // Vai para o topo para garantir que o modal seja visto
+    originalAbrirModal();
 };
 
-window.fecharModal = () => document.getElementById('modal-cliente').classList.add('hidden');
+window.fecharModal = () => {
+    document.getElementById('modal-cliente').classList.add('hidden');
+    document.body.classList.remove('modal-open'); // Libera o scroll da página
+};
 
 window.salvarCliente = async () => {
     const nome = document.getElementById('nome-cliente').value;
@@ -165,7 +170,11 @@ window.salvarCliente = async () => {
 };
 
 window.renderClientes = async () => {
-    const q = query(collection(db, "clientes"), where("userId", "==", usuarioLogado.uid));
+    const q = query(
+    collection(db, "clientes"), 
+    where("userId", "==", usuarioLogado.uid),
+    orderBy("proximaTroca", "asc") // Os que vencem antes aparecem no topo!
+);
     const snap = await getDocs(q);
     const lista = document.getElementById('lista-clientes');
     lista.innerHTML = "";
