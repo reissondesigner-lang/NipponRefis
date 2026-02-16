@@ -1,42 +1,75 @@
+/* PALETA NIPPONFLEX */
 :root {
     --navy: #002344;
+    --navy-light: #003a70;
     --silver: #E5E7E9;
-    --gold: #D4AF37;
     --white: #FFFFFF;
+    --red-danger: #ef4444;
+    --orange-warn: #f59e0b;
+    --green-success: #10b981;
+    --blue-info: #3b82f6;
 }
 
-body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; }
+/* RESET E BASE */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; color: #1f2937; line-height: 1.5; }
 .hidden { display: none !important; }
-.screen { min-height: 100vh; width: 100%; }
 
-/* Estilo Nipponflex */
-.bg-navy { background: var(--navy); }
-.text-navy { color: var(--navy); }
+/* UTILITÁRIOS (Substituindo Tailwind) */
+.flex { display: flex; }
+.grid { display: grid; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: justify-content: center; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.p-4 { padding: 1rem; }
+.mt-4 { margin-top: 1rem; }
+.font-bold { font-weight: 700; }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-white { color: white; }
+.rounded-lg { border-radius: 0.5rem; }
+.shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.w-full { width: 100%; }
 
-.app-header { background: var(--navy); color: white; padding: 15px; position: sticky; top: 0; z-index: 100; }
-.header-content { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto; }
-.brand { font-size: 1.2rem; letter-spacing: 1px; }
+/* TELAS */
+.screen { min-height: 100vh; display: flex; flex-direction: column; }
 
-.dashboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
-.dash-card { background: white; padding: 10px; border-radius: 8px; text-align: center; border-bottom: 3px solid #ccc; }
-.dash-card span { display: block; font-size: 1.5rem; font-weight: bold; }
-.dash-card label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+/* AUTH CARD */
+.auth-card { background: white; padding: 2rem; border-radius: 1rem; shadow: 0 10px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: auto; }
+.logo { font-size: 1.5rem; font-weight: 800; color: var(--navy); text-align: center; }
+.logo span { color: var(--blue-info); }
+.subtitle { text-align: center; font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem; }
 
-.warning { border-color: #f59e0b; }
-.danger { border-color: #ef4444; }
-.info { border-color: #3b82f6; }
+/* INPUTS */
+input, select, textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; }
+input:focus { border-color: var(--navy); }
 
-.btn-add { width: 100%; background: var(--navy); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
+/* BOTÕES */
+.btn-primary { background: var(--navy); color: white; border: none; padding: 0.8rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
+.btn-primary:hover { background: var(--navy-light); }
+.btn-secondary { background: transparent; color: var(--navy); border: 1px solid var(--navy); padding: 0.8rem; border-radius: 0.5rem; margin-top: 0.5rem; cursor: pointer; width: 100%; }
 
-/* Cards de Cliente */
-.cliente-card { background: white; margin-bottom: 12px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.status-vencido { border-left: 6px solid #ef4444; }
-.status-hoje { border-left: 6px solid #f59e0b; }
-.status-ok { border-left: 6px solid #10b981; }
+/* HEADER */
+.app-header { background: var(--navy); color: white; padding: 1rem; position: sticky; top: 0; z-index: 50; }
+.header-content { max-width: 600px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.badge { background: var(--red-danger); font-size: 0.6rem; padding: 2px 5px; border-radius: 99px; position: relative; top: -10px; left: -8px; }
 
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
-.modal-content { background: white; padding: 20px; border-radius: 15px; width: 100%; max-width: 400px; }
-.modal-content input, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+/* DASHBOARD */
+.dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 1rem 0; }
+.dash-card { background: white; padding: 0.75rem; border-radius: 0.75rem; text-align: center; border-bottom: 4px solid #e5e7eb; }
+.dash-card span { font-size: 1.25rem; font-weight: 800; display: block; }
+.dash-card.warning { border-bottom-color: var(--orange-warn); color: var(--orange-warn); }
+.dash-card.danger { border-bottom-color: var(--red-danger); color: var(--red-danger); }
+.dash-card.info { border-bottom-color: var(--blue-info); color: var(--blue-info); }
 
-.btn-confirm { background: var(--navy); color: white; border: none; padding: 10px 20px; border-radius: 5px; }
-.btn-cancel { background: #eee; border: none; padding: 10px 20px; border-radius: 5px; margin-left: 10px; }
+/* CARDS CLIENTE */
+.cliente-card { background: white; padding: 1rem; border-radius: 1rem; margin-bottom: 1rem; border-left: 6px solid #e5e7eb; }
+.status-vencido { border-left-color: var(--red-danger); }
+.status-hoje { border-left-color: var(--orange-warn); }
+.status-ok { border-left-color: var(--green-success); }
+
+/* MODAL */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 100; }
+.modal-content { background: white; padding: 1.5rem; border-radius: 1rem; width: 100%; max-width: 450px; }
