@@ -5,6 +5,7 @@
     --azul-marinho: #0a4c96;
     --fundo: #e6f4f7;
     --branco: #ffffff;
+    --nippon-vermelho: #e53935;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
@@ -164,8 +165,6 @@ input {
 body.modal-open {
     overflow: hidden;
 }
-/* Importando a fonte do seu modelo */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
 
 /* Estilo específico para a tela de login */
 #login-screen {
