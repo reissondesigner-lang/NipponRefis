@@ -12,19 +12,30 @@ let msgPadrao = "Olá [NOME], aqui é o [DISTRIBUIDOR] da Nipponflex. Seu refil 
 
 // --- NAVEGAÇÃO ---
 function showApp() {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    console.log("Mudando para tela: APP");
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('block-screen').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
 }
 
 function showLogin() {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    console.log("Mudando para tela: LOGIN");
+    document.getElementById('main-app').classList.remove('active');
+    document.getElementById('block-screen').classList.remove('active');
     document.getElementById('login-screen').classList.add('active');
 }
 
 function showBlock() {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    console.log("Mudando para tela: BLOQUEIO");
+    document.getElementById('main-app').classList.remove('active');
+    document.getElementById('login-screen').classList.remove('active');
     document.getElementById('block-screen').classList.add('active');
 }
+
+// Torne as funções globais para o Firebase conseguir chamar
+window.showApp = showApp;
+window.showLogin = showLogin;
+window.showBlock = showBlock;
 
 // --- AUTENTICAÇÃO ---
 window.handleLogin = () => {
