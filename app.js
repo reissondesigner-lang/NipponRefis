@@ -406,3 +406,26 @@ window.abrirModalCadastro = () => {
     selecionarModelo(9); // Default 9 meses
     originalAbrirModal();
 };
+
+window.abrirConfiguracoes = () => {
+    document.getElementById('msg-custom-input').value = msgPadrao;
+    document.getElementById('modal-config').classList.remove('hidden');
+};
+
+window.fecharConfig = () => document.getElementById('modal-config').classList.add('hidden');
+
+window.salvarConfiguracoes = async () => {
+    const novaMsg = document.getElementById('msg-custom-input').value;
+    
+    try {
+        const userRef = doc(db, "users", usuarioLogado.uid);
+        await updateDoc(userRef, {
+            msgCustom: novaMsg
+        });
+        msgPadrao = novaMsg;
+        alert("Configurações salvas!");
+        fecharConfig();
+    } catch (error) {
+        alert("Erro ao salvar configurações.");
+    }
+};
