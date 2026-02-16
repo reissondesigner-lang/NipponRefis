@@ -47,35 +47,46 @@ window.logout = () => signOut(auth);
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         usuarioLogado = user;
-        const userRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userRef);
+        try {
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
 
-        // Se o documento não existir (usuário novo), criamos um padrão agora
-        if (!userDoc.exists()) {
-            const dadosPadrao = {
-                pago: true,
-                estoque9: 0,
-                estoque12: 0,
-                msgCustom: msgPadrao
-            };
-            await setDoc(userRef, dadosPadrao);
-            atualizarInterfaceEstoque(dadosPadrao);
-        } else {
-            const dados = userDoc.data();
-            
-            // Verifica se está pago
-            if (dados.pago === false) {
-                showBlock();
-                return; // Para a execução aqui
+            let dados;
+
+            if (!userDoc.exists()) {
+                // Se o usuário não tem documento, cria um agora
+                dados = {
+                    pago: true,
+                    estoque9: 0,
+                    estoque12: 0,
+                    msgCustom: msgPadrao
+                };
+                await setDoc(userRef, dados);
+            } else {
+                // Se existe, pega os dados com segurança
+                dados = userDoc.data();
             }
 
-            // Se chegou aqui, está logado e pago
-            msgPadrao = dados.msgCustom || msgPadrao;
-            atualizarInterfaceEstoque(dados);
-        }
+            // --- PROTEÇÃO CONTRA O ERRO DE UNDEFINED ---
+            // Se dados.pago for undefined ou false, bloqueia
+            if (!dados || dados.pago === false) {
+                showBlock();
+                return;
+            }
 
-        showApp();
-        renderClientes();
+            // Define a mensagem: usa a do banco, se não existir usa a padrão global
+            msgPadrao = dados.msgCustom || msgPadrao;
+            
+            // Atualiza a interface (inputs de estoque e badge)
+            atualizarInterfaceEstoque(dados);
+            
+            // Mostra o app e carrega clientes
+            showApp();
+            renderClientes();
+
+        } catch (error) {
+            console.error("Erro ao carregar perfil:", error);
+        }
     } else {
         showLogin();
     }
