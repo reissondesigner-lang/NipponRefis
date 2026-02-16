@@ -10,8 +10,22 @@
 body { background-color: var(--fundo); }
 
 /* Gerenciamento de Telas */
-.screen { display: none; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; }
-.screen.active { display: block; }
+/* No seu style.css, verifique/substitua estas linhas */
+.screen { 
+    display: none !important; /* Esconde tudo por padrão */
+    width: 100%;
+    min-height: 100vh;
+}
+
+.screen.active { 
+    display: block !important; /* Mostra apenas a que tiver .active */
+}
+
+/* Se quiser que o app principal use flex para alinhar itens */
+#main-app.active {
+    display: flex !important;
+    flex-direction: column;
+}
 
 /* Cabeçalho */
 header {
