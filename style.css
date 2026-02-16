@@ -132,3 +132,31 @@ input {
 }
 
 .hidden { display: none !important; }
+
+/* Garante que o modal fique fixo no meio da tela do celular */
+.modal {
+    position: fixed; /* Fixa na tela, ignora o scroll */
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7); /* Fundo escuro atrás */
+    display: flex;
+    align-items: center; /* Centraliza vertical */
+    justify-content: center; /* Centraliza horizontal */
+    z-index: 9999; /* Fica acima de tudo */
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    padding: 25px;
+    max-height: 90vh; /* Não deixa o modal ser maior que a tela */
+    overflow-y: auto; /* Se o celular for pequeno, permite rolar dentro do modal */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* Evita que o corpo da página role quando o modal estiver aberto */
+body.modal-open {
+    overflow: hidden;
+}
