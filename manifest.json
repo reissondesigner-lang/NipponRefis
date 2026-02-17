@@ -1,11 +1,17 @@
 {
-  "name": "Control Refis",
-  "short_name": "ControlRefis",
+  "name": "ControlRefil - Gestor de Trocas",
+  "short_name": "ControlRefil",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#051c63",
-  "theme_color": "#051c63",
+  "background_color": "#0a4c96",
+  "theme_color": "#0a4c96",
+  "description": "Gestão inteligente de estoque e trocas de refil.",
   "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
