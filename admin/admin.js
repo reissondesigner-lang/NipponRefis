@@ -44,12 +44,14 @@ async function mostrarPainel() {
 }
 
 async function renderUsuarios() {
-    const snap = await getDocs(collection(db, "users"));
-    const lista = document.getElementById('lista-usuarios');
-    lista.innerHTML = "Carregando distribuidores...";
-
+    if (!db) {
+        console.error("ERRO: O objeto 'db' não foi carregado corretamente.");
+        return;
+    }
+    
     try {
         const snap = await getDocs(collection(db, "users"));
+        const lista = document.getElementById('lista-usuarios');
         lista.innerHTML = "";
 
         snap.forEach(d => {
