@@ -10,13 +10,27 @@
 <body>
 
   <!-- TELA LOGIN -->
-  <div id="loginScreen">
-    <h2>Entrar</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Senha" />
-    <button id="loginBtn">Entrar</button>
-    <button id="registerBtn">Criar Conta</button>
-  </div>
+<div id="login-screen" class="screen active">
+    <div class="login-container">
+        <div class="logo">
+            <span style="color: #e54848;">Control</span><span style="color: #0a4c96;">Refil</span>
+        </div>
+        <div class="input-group">
+            <input type="email" id="email" placeholder="E-mail">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Senha">
+        </div>
+        <button onclick="handleLogin()" style="margin-bottom: 10px;">ENTRAR</button>
+        <p style="color: #ddd; font-size: 12px; margin-top: 10px; cursor: pointer;" onclick="handleSignup()">
+            Primeiro Acesso
+        </p>
+        <div class="forgot" onclick="alert('Entre em contato com o suporte para resetar sua senha.')">
+            Esqueci a senha
+        </div>
+    </div>
+</div>
+
 
   <!-- BLOQUEIO ASSINATURA -->
   <div id="blockedScreen" style="display:none;">
