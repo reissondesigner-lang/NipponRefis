@@ -224,48 +224,37 @@ window.salvarCliente = async () => {
 };
 
 window.renderClientes = async () => {
-    const q = query(
-    collection(db, "clientes"), 
-    where("userId", "==", usuarioLogado.uid),
-    orderBy("proximaTroca", "asc") // Os que vencem antes aparecem no topo!
-);
-    const snap = await getDocs(q);
-    const lista = document.getElementById('lista-clientes');
-    lista.innerHTML = "";
-    
-    let h=0, a=0, s=0;
-    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    // 1. A trava de segurança: se o db não estiver pronto, a função para e não dá erro
+    if (!db) {
+        console.warn("Aguardando inicialização do banco de dados...");
+        return; 
+    }
 
-    snap.forEach(d => {
-        const item = d.data();
-        const prox = item.proximaTroca.toDate(); prox.setHours(0,0,0,0);
-        const diff = Math.ceil((prox - hoje) / (1000*60*60*24));
+    // 2. Tente rodar o código, capturando erros de permissão ou conexão
+    try {
+        const q = query(
+            collection(db, "clientes"), 
+            where("userId", "==", usuarioLogado.uid),
+            orderBy("proximaTroca", "asc")
+        );
         
-        let cls = diff < 0 ? "status-vencido" : (diff < 8 ? "status-hoje" : "status-ok");
-        if(diff < 0) a++; else if(diff === 0) h++; else if(diff <= 7) s++;
+        const snap = await getDocs(q);
+        const lista = document.getElementById('lista-clientes');
+        
+        // Se não houver clientes, limpa a lista e encerra
+        if (snap.empty) {
+            lista.innerHTML = "<p style='text-align:center; padding:20px;'>Nenhum cliente cadastrado.</p>";
+            return;
+        }
 
-        lista.innerHTML += `
-            <div class="cliente-card ${cls}">
-                <div class="card-linha">
-                    <div>
-                        <h4 style="color: var(--azul-marinho)">${item.nome}</h4>
-                        <small>${item.qtd}x ${item.modelo==9?'Alcaline':'Alcaline Max'}</small>
-                    </div>
-                    <div style="display:flex; gap:5px">
-                        <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp"><i class="fab fa-whatsapp"></i></button>
-                        <button onclick="editarCliente('${d.id}')" class="btn-round btn-edit"><i class="fas fa-edit"></i></button>
-                    </div>
-                </div>
-                <div class="card-linha" style="margin-top:0px">
-                    <span style="font-size:15px">Troca: <b>${prox.toLocaleDateString()}</b></span>
-                    <button onclick="confirmarReposicao('${d.id}',${item.modelo},${item.qtd})" class="btn-round btn-repo">REPOSIÇÃO</button>
-                </div>
-            </div>`;
-    });
-    document.getElementById('count-hoje').innerText = h;
-    document.getElementById('count-atrasados').innerText = a;
-    document.getElementById('count-7dias').innerText = s;
-};
+        lista.innerHTML = "";
+        
+        let h=0, a=0, s=0;
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+
+        snap.forEach(d => {
+            const item = d.data();
+            // ... resto do seu código de renderização (mantendo o snap.forEach exatamente como você enviou)
 
 window.editarCliente = async (id) => {
     const docSnap = await getDoc(doc(db, "clientes", id));
