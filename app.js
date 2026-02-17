@@ -208,6 +208,30 @@ window.renderClientes = async () => {
         const item = d.data();
         const prox = item.proximaTroca.toDate(); prox.setHours(0,0,0,0);
         const diff = Math.ceil((prox - hoje) / (1000*60*60*24));
+        const dados = docSnapshot.data(); 
+        const id = docSnapshot.id;
+
+        // Agora criamos o card usando a variável 'dados'
+        const card = document.createElement('div');
+        card.className = 'cliente-card';
+        card.innerHTML = `
+            <div class="cliente-info">
+                <strong>${dados.nome}</strong>
+                <span>${dados.whatsapp}</span>
+                <small>Próxima troca: ${dados.proximaTroca}</small>
+            </div>
+            <div class="cliente-acoes">
+                <button onclick="window.editarCliente('${id}', '${dados.nome}', '${dados.whatsapp}', '${dados.dataVenda}', ${dados.modelo}, ${dados.qtd})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="window.deletarCliente('${id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        lista.appendChild(card);
+    });
+};
         
         let cls = diff < 0 ? "status-vencido" : (diff <= 7 ? "status-hoje" : "status-ok");
         if(diff < 0) a++; else if(diff === 0) h++; else if(diff <= 7) s++;
