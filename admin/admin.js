@@ -46,37 +46,43 @@ async function mostrarPainel() {
 }
 
 async function renderUsuarios() {
-    if (!db) {
-        console.error("ERRO: O objeto 'db' não foi carregado corretamente.");
-        return;
-    }
-    
+    const lista = document.getElementById('lista-usuarios');
     try {
+        console.log("Buscando usuários...");
         const snap = await getDocs(collection(db, "users"));
-        const lista = document.getElementById('lista-usuarios');
-        lista.innerHTML = "";
+        console.log("Usuários encontrados:", snap.size);
+        
+        if (snap.empty) {
+            lista.innerHTML = "<p>Nenhum distribuidor cadastrado.</p>";
+            return;
+        }
 
+        lista.innerHTML = "";
         snap.forEach(d => {
             const u = d.data();
-            if(u.role === 'admin') return;
+            // Pula você mesmo (o admin) na lista
+            if (u.role === 'admin') return;
 
-            const card = document.createElement('div');
-            card.className = 'user-card';
-            card.innerHTML = `
-                <div>
-                    <strong>${u.nome || 'Sem nome'}</strong><br>
-                    <small>${u.email}</small> <span class="badge ${u.status === 'ativo' ? 'status-ativo' : 'status-pendente'}">${u.status || 'pendente'}</span>
-                </div>
-                <button onclick="toggleStatus('${d.id}', '${u.status || 'pendente'}')" class="btn-round" style="background:#0a4c96; color:white; width:auto; padding:5px 15px;">
-                    ${u.status === 'pendente' ? 'Ativar' : 'Bloquear'}
-                </button>
-            `;
-            lista.appendChild(card);
+            lista.innerHTML += `
+                <div class="user-card" style="background:white; padding:15px; margin-bottom:10px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>${u.email}</strong><br>
+                        <small>Status: ${u.pago ? 'Ativo' : 'Pendente'}</small>
+                    </div>
+                    <button onclick="toggleAcesso('${d.id}', ${u.pago})" class="btn-repo">
+                        ${u.pago ? 'Bloquear' : 'Liberar'}
+                    </button>
+                </div>`;
         });
     } catch (e) {
-        lista.innerHTML = "Erro ao carregar.";
+        console.error("Erro ao listar usuários:", e);
+        lista.innerHTML = "<p>Erro ao carregar lista. Verifique as Regras de Segurança no Firebase.</p>";
     }
 }
+window.toggleAcesso = async (id, statusAtual) => {
+    await updateDoc(doc(db, "users", id), { pago: !statusAtual });
+    renderUsuarios();
+};
 
 window.toggleStatus = async (id, statusAtual) => {
     const novoStatus = statusAtual === 'pendente' ? 'ativo' : 'pendente';
