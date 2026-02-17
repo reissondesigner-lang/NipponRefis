@@ -12,32 +12,52 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const loginScreen = document.getElementById("loginScreen");
-const blockedScreen = document.getElementById("blockedScreen");
-const appScreen = document.getElementById("appScreen");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
 document.getElementById("loginBtn").onclick = async () => {
-  const email = email.value;
-  const password = password.value;
-  await signInWithEmailAndPassword(auth, email, password);
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!email || !password) {
+    alert("Preencha email e senha.");
+    return;
+  }
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    alert("Erro no login: " + error.message);
+  }
 };
 
 document.getElementById("registerBtn").onclick = async () => {
-  const email = email.value;
-  const password = password.value;
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  const user = userCredential.user;
+  if (!email || !password) {
+    alert("Preencha email e senha.");
+    return;
+  }
 
-  await setDoc(doc(db, "users", user.uid), {
-    email: user.email,
-    estoque12: 0,
-    estoque9: 0,
-    msgCustom: "",
-    pago: false,
-    createdAt: new Date()
-  });
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      estoque12: 0,
+      estoque9: 0,
+      msgCustom: "",
+      pago: false,
+      createdAt: new Date()
+    });
+
+  } catch (error) {
+    alert("Erro ao criar conta: " + error.message);
+  }
 };
+
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
