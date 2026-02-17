@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NipponSync - Gestor de Refil</title>
+    <title>Control Refil</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="data:,">
@@ -14,7 +14,7 @@
     <div id="login-screen" class="screen active">
         <div class="login-container">
             <div class="logo">
-                <span style="font-weight: 500; color: #e54848;">Nippon</span><span style="color: #fff;">Sync</span>
+                <span style="color: #e54848;">Control</span><span style="color: #fff;">Refil</span>
             </div>
             <div class="input-group">
                 <input type="email" id="email" placeholder="E-mail">
@@ -44,7 +44,7 @@
     <div id="main-app" class="screen">
         <header>
             <div class="logo-header">
-                <span style="font-weight: 500; color: #e53935;">Control</span><span style="color: #0a4c96;">Refil</span>
+                <span style="color: #e53935;">Control</span><span style="color: #0a4c96;">Refil</span>
             </div>
             
             <div class="header-actions">
@@ -121,7 +121,7 @@
 
     <div id="modal-cliente" class="modal-overlay hidden">
         <div class="modal-card">
-            <h2 id="modal-title">Novo Cliente</h2>
+            <h2 id="modal-title">CLIENTE</h2>
             <div class="form-group">
                 <label>NOME DO CLIENTE</label>
                 <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
@@ -137,7 +137,7 @@
             <div class="form-group">
                 <label>MODELO DO REFIL</label>
                 <div class="buttons-row">
-                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9m)</button>
+                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9 meses)</button>
                     <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">MAX (1 ano)</button>
                 </div>
                 <input type="hidden" id="modelo-refil-valor" value="9">
