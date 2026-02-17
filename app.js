@@ -1,6 +1,8 @@
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { collection, addDoc, query, where, getDocs, doc, updateDoc, getDoc, setDoc, orderBy } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+import { collection, addDoc, query, where, getDocs, updateDoc, setDoc, orderBy } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 console.log("Conexão Firestore:", db);
 
 let usuarioLogado = null;
@@ -69,17 +71,16 @@ window.handleSignup = async () => {
 };
 
 onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        usuarioLogado = user;
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().pago === false) { showBlock(); }
-        else {
-            msgPadrao = userDoc.data()?.msgCustom || msgPadrao;
-            document.getElementById('estoque-badge').innerText = (userDoc.data()?.estoque9 || 0) + (userDoc.data()?.estoque12 || 0);
-            showApp();
-            renderClientes();
-        }
-    } else { showLogin(); }
+  if (!user) return;
+
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  const data = userDoc.data();
+
+  if (data.subscriptionStatus !== "active") {
+      mostrarTelaBloqueio();
+  } else {
+      iniciarApp();
+  }
 });
 
 // --- CLIENTES ---
