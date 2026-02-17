@@ -7,6 +7,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+let clienteEmEdicaoId = null; // Começa como null (significa novo cadastro)
 let usuarioLogado = null;
 let msgPadrao = "Olá [NOME], Seu refil [MODELO] vence em [DATA]. Vamos agendar a reposição pra hoje ou amanhã?";
 
@@ -108,15 +109,17 @@ window.selecionarModelo = (meses) => {
 };
 
 window.abrirModalCadastro = () => {
+    clienteEmEdicaoId = null; // Reseta para novo cliente
+    
+    // Limpa os campos do formulário
     document.getElementById('nome-cliente').value = "";
     document.getElementById('whatsapp-cliente').value = "";
+    document.getElementById('data-venda').value = new Date().toISOString().split('T')[0];
     document.getElementById('qtd-refil').value = 1;
     document.getElementById('modal-title').innerText = "Novo Cliente";
-    document.querySelector('.btn-confirm').onclick = window.salvarCliente;
-    document.getElementById('data-venda').value = new Date().toISOString().split('T')[0];
-    window.selecionarModelo(9);
+    
+    window.selecionarModelo(9); // Padrão
     document.getElementById('modal-cliente').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
 };
 
 window.fecharModal = () => {
@@ -126,32 +129,45 @@ window.fecharModal = () => {
 
 window.salvarCliente = async () => {
     const nome = document.getElementById('nome-cliente').value;
-    const tel = document.getElementById('whatsapp-cliente').value;
+    const whatsapp = document.getElementById('whatsapp-cliente').value;
+    const dataVenda = document.getElementById('data-venda').value;
     const modelo = parseInt(document.getElementById('modelo-refil-valor').value);
-    const qtd = parseInt(document.getElementById('qtd-refil').value) || 1;
-    const dataVendaStr = document.getElementById('data-venda').value;
+    const qtd = parseInt(document.getElementById('qtd-refil').value);
 
-    const partes = dataVendaStr.split("-");
-    const dataVenda = new Date(partes[0], partes[1] - 1, partes[2], 12);
-    const proxima = new Date(dataVenda);
-    proxima.setMonth(proxima.getMonth() + modelo);
+    // Cálculo da próxima troca (exemplo de 9 ou 12 meses)
+    const dataObj = new Date(dataVenda);
+    dataObj.setMonth(dataObj.getMonth() + modelo);
+    const proximaTroca = dataObj.toISOString().split('T')[0];
+
+    const dadosCliente = {
+        userId: usuarioLogado.uid,
+        nome,
+        whatsapp,
+        dataVenda,
+        proximaTroca,
+        modelo,
+        qtd,
+        timestamp: new Date()
+    };
 
     try {
-        await addDoc(collection(db, "clientes"), { 
-            userId: usuarioLogado.uid, nome, whatsapp: tel, modelo, qtd, ultimaTroca: dataVenda, proximaTroca: proxima 
-        });
-        
-        const userRef = doc(db, "users", usuarioLogado.uid);
-        const userSnap = await getDoc(userRef);
-        const campo = modelo === 9 ? 'estoque9' : 'estoque12';
-        const novoEstoque = (userSnap.data()[campo] || 0) - qtd;
-        await updateDoc(userRef, { [campo]: novoEstoque });
-        
-        document.getElementById('estoque-badge').innerText = (campo === 'estoque9' ? novoEstoque + (userSnap.data().estoque12 || 0) : novoEstoque + (userSnap.data().estoque9 || 0));
+        if (clienteEmEdicaoId) {
+            // EDITA o cliente existente
+            const clienteRef = doc(db, "clientes", clienteEmEdicaoId);
+            await updateDoc(clienteRef, dadosCliente);
+            alert("Cliente atualizado com sucesso!");
+        } else {
+            // CRIA um novo cliente
+            await addDoc(collection(db, "clientes"), dadosCliente);
+            alert("Cliente cadastrado com sucesso!");
+        }
 
         fecharModal();
-        renderClientes();
-    } catch (e) { alert("Erro ao salvar."); }
+        // A lista deve atualizar sozinha se você estiver usando onSnapshot
+    } catch (error) {
+        console.error("Erro ao salvar:", error);
+        alert("Erro ao salvar cliente.");
+    }
 };
 
 window.renderClientes = async () => {
@@ -194,16 +210,17 @@ window.renderClientes = async () => {
     document.getElementById('count-7dias').innerText = s;
 };
 
-window.editarCliente = async (id) => {
-    const docSnap = await getDoc(doc(db, "clientes", id));
-    const dados = docSnap.data();
-    document.getElementById('nome-cliente').value = dados.nome;
-    document.getElementById('whatsapp-cliente').value = dados.whatsapp;
-    document.getElementById('data-venda').value = dados.ultimaTroca.toDate().toISOString().split('T')[0];
-    selecionarModelo(dados.modelo);
+window.editarCliente = (id, nome, whatsapp, data, modelo, qtd) => {
+    clienteEmEdicaoId = id; // Salva o ID para saber que é uma edição
+    
     document.getElementById('modal-title').innerText = "Editar Cliente";
+    document.getElementById('nome-cliente').value = nome;
+    document.getElementById('whatsapp-cliente').value = whatsapp;
+    document.getElementById('data-venda').value = data;
+    document.getElementById('qtd-refil').value = qtd;
+    
+    window.selecionarModelo(modelo);
     document.getElementById('modal-cliente').classList.remove('hidden');
-    document.querySelector('.btn-confirm').onclick = () => finalizarEdicao(id);
 };
 
 async function finalizarEdicao(id) {
