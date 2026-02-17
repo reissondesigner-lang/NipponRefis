@@ -228,7 +228,7 @@ window.renderClientes = async () => {
         const prox = item.proximaTroca.toDate(); prox.setHours(0,0,0,0);
         const diff = Math.ceil((prox - hoje) / (1000*60*60*24));
         
-        let cls = diff < 0 ? "status-vencido" : (diff === 0 ? "status-hoje" : "status-ok");
+        let cls = diff < 0 ? "status-vencido" : (diff < 8 ? "status-hoje" : "status-ok");
         if(diff < 0) a++; else if(diff === 0) h++; else if(diff <= 7) s++;
 
         lista.innerHTML += `
