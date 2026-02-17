@@ -25,12 +25,12 @@ onAuthStateChanged(auth, async (user) => {
 
 // Função de Login Exclusiva para Admin
 window.loginAdmin = async () => {
-    const email = document.getElementById('admin-email').value;
-    const senha = document.getElementById('admin-senha').value;
+    const e = document.getElementById('admin-email').value;
+    const s = document.getElementById('admin-senha').value;
     window.loginAdmin = loginAdmin;
     
     try {
-        await signInWithEmailAndPassword(auth, email, senha);
+        await signInWithEmailAndPassword(auth, e, s);
         // O onAuthStateChanged cuidará do resto
     } catch (error) {
         alert("Erro ao acessar: " + error.message);
