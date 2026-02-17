@@ -57,20 +57,31 @@
 
 <div id="modal-config" class="modal-overlay hidden">
     <div class="modal-card">
-        <h2>Configurações</h2>
-        <p>Personalize a mensagem automática que será enviada para o cliente.</p>
+        <h2>Ajustes e Estoque</h2>
+        <p>Gerencie seu estoque e sua mensagem de aviso.</p>
+
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
+            <label style="font-size: 11px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL</label>
+            <div class="buttons-row">
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label>ALCALINE (9m)</label>
+                    <input type="number" id="stock-9" placeholder="0">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label>MAX (1 ano)</label>
+                    <input type="number" id="stock-12" placeholder="0">
+                </div>
+            </div>
+        </div>
 
         <div class="form-group">
-            <label>MENSAGEM DE AVISO</label>
-            <textarea id="msg-custom-input" rows="6" 
-                style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none;"></textarea>
-            <p style="font-size: 10px; text-align: left; margin-top: 5px;">
-                * Use [NOME], [MODELO] e [DATA] para preenchimento automático.
-            </p>
+            <label>MENSAGEM DE AVISO (WhatsApp)</label>
+            <textarea id="msg-custom-input" rows="5" 
+                style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none; font-family: sans-serif;"></textarea>
         </div>
 
         <div class="buttons-row">
-            <button onclick="salvarConfiguracoes()" class="btn btn-confirm">SALVAR MENSAGEM</button>
+            <button onclick="salvarTudoConfig()" class="btn btn-confirm">SALVAR TUDO</button>
             <button onclick="fecharConfig()" class="btn btn-close">CANCELAR</button>
         </div>
     </div>
