@@ -1,0 +1,20 @@
+{
+  "name": "Control Refil",
+  "short_name": "ControlRefil",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a4c96",
+  "theme_color": "#0a4c96",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/192/192440.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/192/192440.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
