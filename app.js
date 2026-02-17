@@ -116,20 +116,29 @@ window.handleLogin = () => {
     signInWithEmailAndPassword(auth, e, s).catch(err => alert("Erro: " + err.message));
 };
 
-window.handleSignup = () => {
+window.handleSignup = async () => { // <--- Adicionado async aqui
     const nome = document.getElementById('signup-nome').value;
     const e = document.getElementById('email').value;
     const s = document.getElementById('password').value;
-    // SALVE O NOME AQUI!
+
+    try {
+        // 1. Cria o usuário no Auth
+        const cred = await createUserWithEmailAndPassword(auth, e, s);
+        
+        // 2. Salva os dados no Firestore (O await agora vai funcionar!)
         await setDoc(doc(db, "users", cred.user.uid), { 
-            nome: nome, // Importante para o admin ver
+            nome: nome,
             email: e,
             pago: true, 
             estoque9: 0, 
             estoque12: 0, 
             msgCustom: msgPadrao 
         });
-    }).catch(err => alert("Erro: " + err.message));
+        
+        alert("Cadastro realizado com sucesso!");
+    } catch (err) {
+        alert("Erro: " + err.message);
+    }
 };
 
 onAuthStateChanged(auth, async (user) => {
