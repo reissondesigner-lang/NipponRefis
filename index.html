@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Control Refil</title>
+    <title>ControlRefil</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="data:,">
@@ -62,8 +62,14 @@
 
         <main class="container">
             <div class="dashboard">
+
+     <div class="card">
+        <div class="number-box azul" id="count-7dias">0</div>
+        <div class="label">Próximos 7 dias</div>
+    </div>
+                
     <div class="card">
-        <div class="number-box azul" id="count-hoje">0</div>
+        <div class="number-box amarelo" id="count-hoje">0</div>
         <div class="label">Hoje</div>
     </div>
 
@@ -72,10 +78,7 @@
         <div class="label">Atrasados</div>
     </div>
 
-    <div class="card">
-        <div class="number-box amarelo" id="count-7dias">0</div>
-        <div class="label">Próximos 7 dias</div>
-    </div>
+   
 </div>
 
             <button onclick="abrirModalCadastro()" class="btn-add">
@@ -93,14 +96,14 @@
             <p>Gerencie seu estoque e sua mensagem de aviso.</p>
 
             <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
-                <label style="font-size: 11px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL</label>
+                <label style="font-size: 15px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL DE REFIS</label>
                 <div class="buttons-row">
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>ALCALINE (9m)</label>
+                        <label>ALCALINE (9 meses)</label>
                         <input type="number" id="stock-9" placeholder="0">
                     </div>
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>MAX (1 ano)</label>
+                        <label>Alcaline MAX (1 ano)</label>
                         <input type="number" id="stock-12" placeholder="0">
                     </div>
                 </div>
