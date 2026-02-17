@@ -71,6 +71,7 @@ window.handleLogin = () => {
     const e = document.getElementById('email').value;
     const s = document.getElementById('password').value;
     signInWithEmailAndPassword(auth, e, s).catch(err => alert("Erro: " + err.message));
+    window.handleLogin = handleLogin;
 };
 
 window.handleSignup = () => {
