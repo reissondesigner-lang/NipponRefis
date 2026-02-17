@@ -304,7 +304,11 @@ body.modal-open {
 .logo {
     font-size: 32px;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    background-color:#f1f1f1;
+    border: 1px solid #012c5d;
+    border-radius: 8px;
+    padding: 6px 12px;
 }
 
 .input-group {
