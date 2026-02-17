@@ -13,8 +13,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const loginScreen = document.getElementById("login-screen");
-const appScreen = document.getElementById("app-screen"); // use o ID original do seu app
-const blockedScreen = document.getElementById("blocked-screen"); // se existir
+const mainApp = document.getElementById("main-app");
 
 // LOGIN
 window.handleLogin = async function () {
@@ -67,25 +66,31 @@ onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
     loginScreen.classList.add("active");
+    mainApp.classList.remove("active");
     return;
   }
 
   const docSnap = await getDoc(doc(db, "users", user.uid));
 
-  if (!docSnap.exists()) return;
+  if (!docSnap.exists()) {
+    loginScreen.classList.add("active");
+    mainApp.classList.remove("active");
+    return;
+  }
 
   const data = docSnap.data();
 
-  if (data.pago) {
+  if (data.pago === true) {
     loginScreen.classList.remove("active");
-    appScreen.classList.add("active");
+    mainApp.classList.add("active");
   } else {
-    loginScreen.classList.remove("active");
-    blockedScreen.classList.add("active");
+    loginScreen.classList.add("active");
+    mainApp.classList.remove("active");
+    alert("Sua conta ainda não foi ativada.");
   }
 });
 
-
-window.logout = () => {
+// LOGOUT
+window.logout = function () {
   signOut(auth);
 };
