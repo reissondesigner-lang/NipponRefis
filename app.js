@@ -236,15 +236,15 @@ window.renderClientes = async () => {
                 <div class="card-linha">
                     <div>
                         <h4 style="color: var(--azul-marinho)">${item.nome}</h4>
-                        <small>${item.qtd}x ${item.modelo==9?'Alcaline':'Max'}</small>
+                        <small>${item.qtd}x ${item.modelo==9?'Alcaline':'Alcaline Max'}</small>
                     </div>
                     <div style="display:flex; gap:5px">
                         <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp"><i class="fab fa-whatsapp"></i></button>
                         <button onclick="editarCliente('${d.id}')" class="btn-round btn-edit"><i class="fas fa-edit"></i></button>
                     </div>
                 </div>
-                <div class="card-linha" style="margin-top:10px">
-                    <span style="font-size:12px">Troca: <b>${prox.toLocaleDateString()}</b></span>
+                <div class="card-linha" style="margin-top:0px">
+                    <span style="font-size:15px">Troca: <b>${prox.toLocaleDateString()}</b></span>
                     <button onclick="confirmarReposicao('${d.id}',${item.modelo},${item.qtd})" class="btn-round btn-repo">REPOSIÇÃO</button>
                 </div>
             </div>`;
