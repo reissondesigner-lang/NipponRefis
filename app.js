@@ -127,9 +127,6 @@ window.fecharModal = () => {
     document.body.style.overflow = 'auto';
 };
 
-// Certifique-se de que esta variável esteja no topo do app.js, fora de qualquer função
-let clienteEmEdicaoId = null;
-
 window.editarCliente = (id, nome, whatsapp, data, modelo, qtd) => {
     console.log("Editando cliente:", id); // Para debug
     clienteEmEdicaoId = id; // Armazena o ID globalmente
