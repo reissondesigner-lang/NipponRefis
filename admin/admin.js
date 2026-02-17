@@ -27,7 +27,8 @@ onAuthStateChanged(auth, async (user) => {
 window.loginAdmin = async () => {
     const email = document.getElementById('admin-email').value;
     const senha = document.getElementById('admin-senha').value;
-
+    window.loginAdmin = loginAdmin;
+    
     try {
         await signInWithEmailAndPassword(auth, email, senha);
         // O onAuthStateChanged cuidará do resto
