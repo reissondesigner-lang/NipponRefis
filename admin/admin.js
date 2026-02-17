@@ -1,71 +1,81 @@
-// Importando as instâncias já configuradas do arquivo principal
 import { auth, db } from "../app.js"; 
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Proteção da Página: Só entra se for Admin
+const areaLogin = document.getElementById('area-login-admin');
+const areaPainel = document.getElementById('area-painel-admin');
+
+// Monitor de Sessão
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists() && userDoc.data().role === 'admin') {
-            console.log("Bem-vindo, Admin!");
-            renderUsuarios();
+            mostrarPainel();
         } else {
-            alert("Acesso Negado! Área restrita para administradores.");
-            window.location.href = "../index.html";
+            // Se logar mas não for admin, expulsa
+            alert("Acesso Negado: Você não tem permissão de administrador.");
+            await signOut(auth);
+            location.reload();
         }
     } else {
-        window.location.href = "../index.html";
+        areaLogin.classList.remove('hidden');
+        areaPainel.classList.add('hidden');
     }
 });
 
-async function renderUsuarios() {
-    const loader = document.getElementById('loader');
-    const lista = document.getElementById('lista-usuarios');
-    if(loader) loader.classList.remove('hidden');
-    lista.innerHTML = "";
+// Função de Login Exclusiva para Admin
+window.loginAdmin = async () => {
+    const email = document.getElementById('admin-email').value;
+    const senha = document.getElementById('admin-senha').value;
 
     try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        if(loader) loader.classList.add('hidden');
+        await signInWithEmailAndPassword(auth, email, senha);
+        // O onAuthStateChanged cuidará do resto
+    } catch (error) {
+        alert("Erro ao acessar: " + error.message);
+    }
+};
 
-        querySnapshot.forEach((d) => {
+async function mostrarPainel() {
+    areaLogin.classList.add('hidden');
+    areaPainel.classList.remove('hidden');
+    renderUsuarios();
+}
+
+async function renderUsuarios() {
+    const lista = document.getElementById('lista-usuarios');
+    lista.innerHTML = "Carregando distribuidores...";
+
+    try {
+        const snap = await getDocs(collection(db, "users"));
+        lista.innerHTML = "";
+
+        snap.forEach(d => {
             const u = d.data();
-            if (u.role === 'admin') return; 
+            if(u.role === 'admin') return;
 
             const card = document.createElement('div');
             card.className = 'user-card';
             card.innerHTML = `
                 <div>
-                    <strong>${u.nome || 'Sem Nome'}</strong><br>
-                    <small>${u.email}</small><br>
-                    <span class="badge ${u.status === 'ativo' ? 'status-ativo' : 'status-pendente'}">
-                        ${u.status ? u.status.toUpperCase() : 'PENDENTE'}
-                    </span>
+                    <strong>${u.nome || 'Sem nome'}</strong><br>
+                    <small>${u.email}</small> <span class="badge ${u.status === 'ativo' ? 'status-ativo' : 'status-pendente'}">${u.status || 'pendente'}</span>
                 </div>
-                <div>
-                    <button onclick="toggleStatus('${d.id}', '${u.status || 'pendente'}')" class="btn-repo" style="background: var(--azul-marinho); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">
-                        ${u.status === 'pendente' ? 'Ativar Acesso' : 'Bloquear'}
-                    </button>
-                </div>
+                <button onclick="toggleStatus('${d.id}', '${u.status || 'pendente'}')" class="btn-round" style="background:#0a4c96; color:white; width:auto; padding:5px 15px;">
+                    ${u.status === 'pendente' ? 'Ativar' : 'Bloquear'}
+                </button>
             `;
             lista.appendChild(card);
         });
-    } catch (error) {
-        console.error("Erro ao buscar usuários:", error);
-        lista.innerHTML = "Erro ao carregar usuários. Verifique as permissões do banco de dados.";
+    } catch (e) {
+        lista.innerHTML = "Erro ao carregar.";
     }
 }
 
-// Função global para os botões
 window.toggleStatus = async (id, statusAtual) => {
     const novoStatus = statusAtual === 'pendente' ? 'ativo' : 'pendente';
-    if (confirm(`Mudar status do distribuidor para ${novoStatus}?`)) {
-        try {
-            await updateDoc(doc(db, "users", id), { status: novoStatus });
-            renderUsuarios();
-        } catch (e) {
-            alert("Erro ao atualizar status: " + e.message);
-        }
-    }
+    await updateDoc(doc(db, "users", id), { status: novoStatus });
+    renderUsuarios();
 };
+
+window.logoutAdmin = () => signOut(auth);
