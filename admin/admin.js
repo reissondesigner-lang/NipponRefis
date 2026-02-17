@@ -44,6 +44,7 @@ async function mostrarPainel() {
 }
 
 async function renderUsuarios() {
+    const snap = await getDocs(collection(db, "users"));
     const lista = document.getElementById('lista-usuarios');
     lista.innerHTML = "Carregando distribuidores...";
 
