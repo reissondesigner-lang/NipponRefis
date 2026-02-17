@@ -117,10 +117,18 @@ window.handleLogin = () => {
 };
 
 window.handleSignup = () => {
+    const nome = document.getElementById('signup-nome').value;
     const e = document.getElementById('email').value;
     const s = document.getElementById('password').value;
-    createUserWithEmailAndPassword(auth, e, s).then(async (cred) => {
-        await setDoc(doc(db, "users", cred.user.uid), { pago: true, estoque9: 0, estoque12: 0, msgCustom: msgPadrao });
+    // SALVE O NOME AQUI!
+        await setDoc(doc(db, "users", cred.user.uid), { 
+            nome: nome, // Importante para o admin ver
+            email: e,
+            pago: true, 
+            estoque9: 0, 
+            estoque12: 0, 
+            msgCustom: msgPadrao 
+        });
     }).catch(err => alert("Erro: " + err.message));
 };
 
