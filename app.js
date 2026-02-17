@@ -51,10 +51,16 @@ window.fecharEstoque = () => {
     document.body.style.overflow = 'auto';
 };
 
-window.abrirConfiguracoes = () => {
-    // Preenche o campo de texto com a mensagem atual antes de abrir
-    document.getElementById('msg-custom-input').value = msgPadrao;
+window.abrirConfiguracoes = async () => {
+    const userDoc = await getDoc(doc(db, "users", usuarioLogado.uid));
+    if (userDoc.exists()) {
+        const d = userDoc.data();
+        document.getElementById('stock-9').value = d.estoque9 || 0;
+        document.getElementById('stock-12').value = d.estoque12 || 0;
+        document.getElementById('msg-custom-input').value = d.msgCustom || msgPadrao;
+    }
     document.getElementById('modal-config').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
 };
 
 window.fecharConfig = () => {
@@ -62,20 +68,24 @@ window.fecharConfig = () => {
     document.body.style.overflow = 'auto';
 };
 
-window.salvarConfiguracoes = async () => {
+window.salvarTudoConfig = async () => {
     const novaMsg = document.getElementById('msg-custom-input').value;
+    const s9 = parseInt(document.getElementById('stock-9').value) || 0;
+    const s12 = parseInt(document.getElementById('stock-12').value) || 0;
     
     try {
         const userRef = doc(db, "users", usuarioLogado.uid);
         await updateDoc(userRef, {
-            msgCustom: novaMsg
+            msgCustom: novaMsg,
+            estoque9: s9,
+            estoque12: s12
         });
-        msgPadrao = novaMsg; // Atualiza na memória do app
-        alert("Configurações salvas com sucesso!");
-        window.fecharConfig();
+        msgPadrao = novaMsg;
+        document.getElementById('estoque-badge').innerText = s9 + s12;
+        alert("Configurações e estoque salvos!");
+        fecharConfig();
     } catch (error) {
-        console.error("Erro ao salvar config:", error);
-        alert("Erro ao salvar. Verifique sua conexão.");
+        alert("Erro ao salvar.");
     }
 };
 
