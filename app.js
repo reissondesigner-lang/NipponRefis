@@ -127,6 +127,29 @@ window.fecharModal = () => {
     document.body.style.overflow = 'auto';
 };
 
+// Certifique-se de que esta variável esteja no topo do app.js, fora de qualquer função
+let clienteEmEdicaoId = null;
+
+window.editarCliente = (id, nome, whatsapp, data, modelo, qtd) => {
+    console.log("Editando cliente:", id); // Para debug
+    clienteEmEdicaoId = id; // Armazena o ID globalmente
+
+    // Preenche o modal com os dados atuais
+    document.getElementById('modal-title').innerText = "Editar Cliente";
+    document.getElementById('nome-cliente').value = nome;
+    document.getElementById('whatsapp-cliente').value = whatsapp;
+    document.getElementById('data-venda').value = data;
+    document.getElementById('qtd-refil').value = qtd;
+    
+    // Atualiza o valor oculto do modelo e a aparência dos botões
+    document.getElementById('modelo-refil-valor').value = modelo;
+    window.selecionarModelo(modelo); // Chama a função que pinta os botões de 9m ou 12m
+
+    // Abre o modal
+    document.getElementById('modal-cliente').classList.remove('hidden');
+    window.scrollTo(0, 0); 
+};
+
 window.salvarCliente = async () => {
     const nome = document.getElementById('nome-cliente').value;
     const whatsapp = document.getElementById('whatsapp-cliente').value;
@@ -134,39 +157,44 @@ window.salvarCliente = async () => {
     const modelo = parseInt(document.getElementById('modelo-refil-valor').value);
     const qtd = parseInt(document.getElementById('qtd-refil').value);
 
-    // Cálculo da próxima troca (exemplo de 9 ou 12 meses)
+    if (!nome || !whatsapp || !dataVenda) {
+        return alert("Por favor, preencha todos os campos.");
+    }
+
+    // Calcula a próxima troca
     const dataObj = new Date(dataVenda);
     dataObj.setMonth(dataObj.getMonth() + modelo);
     const proximaTroca = dataObj.toISOString().split('T')[0];
 
     const dadosCliente = {
-        userId: usuarioLogado.uid,
         nome,
         whatsapp,
         dataVenda,
         proximaTroca,
         modelo,
         qtd,
-        timestamp: new Date()
+        userId: auth.currentUser.uid // Garante que o cliente pertence ao usuário logado
     };
 
     try {
         if (clienteEmEdicaoId) {
-            // EDITA o cliente existente
+            // SE EXISTIR ID, ATUALIZA
+            console.log("Atualizando documento:", clienteEmEdicaoId);
             const clienteRef = doc(db, "clientes", clienteEmEdicaoId);
             await updateDoc(clienteRef, dadosCliente);
-            alert("Cliente atualizado com sucesso!");
+            alert("Cliente atualizado!");
         } else {
-            // CRIA um novo cliente
+            // SE NÃO EXISTIR, CRIA NOVO
+            console.log("Criando novo documento");
             await addDoc(collection(db, "clientes"), dadosCliente);
-            alert("Cliente cadastrado com sucesso!");
+            alert("Cliente cadastrado!");
         }
 
         fecharModal();
-        // A lista deve atualizar sozinha se você estiver usando onSnapshot
+        clienteEmEdicaoId = null; // Reseta após salvar
     } catch (error) {
         console.error("Erro ao salvar:", error);
-        alert("Erro ao salvar cliente.");
+        alert("Erro técnico ao salvar. Verifique o console.");
     }
 };
 
@@ -196,7 +224,9 @@ window.renderClientes = async () => {
                     </div>
                     <div style="display:flex; gap:5px">
                         <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp"><i class="fab fa-whatsapp"></i></button>
-                        <button onclick="editarCliente('${d.id}')" class="btn-round btn-edit"><i class="fas fa-edit"></i></button>
+                        <button onclick="window.editarCliente('${doc.id}', '${dados.nome}', '${dados.whatsapp}', '${dados.dataVenda}', ${dados.modelo}, ${dados.qtd})">
+                        <i class="fas fa-edit"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="card-linha" style="margin-top:10px">
@@ -211,6 +241,7 @@ window.renderClientes = async () => {
 };
 
 window.editarCliente = (id, nome, whatsapp, data, modelo, qtd) => {
+    console.log("Editando cliente:", id); // Para debug
     clienteEmEdicaoId = id; // Salva o ID para saber que é uma edição
     
     document.getElementById('modal-title').innerText = "Editar Cliente";
@@ -219,8 +250,13 @@ window.editarCliente = (id, nome, whatsapp, data, modelo, qtd) => {
     document.getElementById('data-venda').value = data;
     document.getElementById('qtd-refil').value = qtd;
     
-    window.selecionarModelo(modelo);
+// Atualiza o valor oculto do modelo e a aparência dos botões
+    document.getElementById('modelo-refil-valor').value = modelo;
+    window.selecionarModelo(modelo); // Chama a função que pinta os botões de 9m ou 12m
+
+    // Abre o modal
     document.getElementById('modal-cliente').classList.remove('hidden');
+    window.scrollTo(0, 0);
 };
 
 async function finalizarEdicao(id) {
