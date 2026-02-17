@@ -14,6 +14,7 @@ import {
 
 const loginScreen = document.getElementById("login-screen");
 const mainApp = document.getElementById("main-app");
+const blockedScreen = document.getElementById("blocked-screen");
 
 // LOGIN
 window.handleLogin = async function () {
@@ -67,6 +68,7 @@ onAuthStateChanged(auth, async (user) => {
   if (!user) {
     loginScreen.classList.add("active");
     mainApp.classList.remove("active");
+    blockedScreen.classList.remove("active");
     return;
   }
 
@@ -75,6 +77,7 @@ onAuthStateChanged(auth, async (user) => {
   if (!docSnap.exists()) {
     loginScreen.classList.add("active");
     mainApp.classList.remove("active");
+    blockedScreen.classList.remove("active");
     return;
   }
 
@@ -82,9 +85,11 @@ onAuthStateChanged(auth, async (user) => {
 
   if (data.pago === true) {
     loginScreen.classList.remove("active");
+    blockedScreen.classList.remove("active");
     mainApp.classList.add("active");
   } else {
     loginScreen.classList.add("active");
+    loginScreen.classList.remove("active");
     mainApp.classList.remove("active");
     alert("Sua conta ainda não foi ativada.");
   }
