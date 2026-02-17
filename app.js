@@ -12,31 +12,34 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+const loginScreen = document.getElementById("login-screen");
+const appScreen = document.getElementById("app-screen"); // use o ID original do seu app
+const blockedScreen = document.getElementById("blocked-screen"); // se existir
 
-document.getElementById("loginBtn").onclick = async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
+// LOGIN
+window.handleLogin = async function () {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   if (!email || !password) {
-    alert("Preencha email e senha.");
+    alert("Preencha e-mail e senha.");
     return;
   }
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
-    alert("Erro no login: " + error.message);
+    alert(error.message);
   }
 };
 
-document.getElementById("registerBtn").onclick = async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
+// CADASTRO
+window.handleSignup = async function () {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   if (!email || !password) {
-    alert("Preencha email e senha.");
+    alert("Preencha e-mail e senha.");
     return;
   }
 
@@ -53,36 +56,35 @@ document.getElementById("registerBtn").onclick = async () => {
       createdAt: new Date()
     });
 
+    alert("Conta criada! Aguarde ativação.");
   } catch (error) {
-    alert("Erro ao criar conta: " + error.message);
+    alert(error.message);
   }
 };
 
-
+// CONTROLE DE SESSÃO
 onAuthStateChanged(auth, async (user) => {
+
   if (!user) {
-    loginScreen.style.display = "block";
-    blockedScreen.style.display = "none";
-    appScreen.style.display = "none";
+    loginScreen.classList.add("active");
     return;
   }
 
-  const userDoc = await getDoc(doc(db, "users", user.uid));
+  const docSnap = await getDoc(doc(db, "users", user.uid));
 
-  if (!userDoc.exists()) return;
+  if (!docSnap.exists()) return;
 
-  const data = userDoc.data();
+  const data = docSnap.data();
 
-  if (data.pago === true) {
-    loginScreen.style.display = "none";
-    blockedScreen.style.display = "none";
-    appScreen.style.display = "block";
+  if (data.pago) {
+    loginScreen.classList.remove("active");
+    appScreen.classList.add("active");
   } else {
-    loginScreen.style.display = "none";
-    blockedScreen.style.display = "block";
-    appScreen.style.display = "none";
+    loginScreen.classList.remove("active");
+    blockedScreen.classList.add("active");
   }
 });
+
 
 window.logout = () => {
   signOut(auth);
