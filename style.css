@@ -194,8 +194,8 @@ header {
 /* Lista de Clientes */
 .cliente-card {
     background: white;
-    margin: 0 15px 12px 15px;
-    padding: 15px;
+    margin: 0 15px 5px 15px;
+    padding: 8px;
     border-radius: 15px;
     border-left: 8px solid #ccc;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -214,9 +214,9 @@ header {
 /* Botões Customizados */
 .btn-round {
     border: none;
-    border-radius: 50px;
+    border-radius: 8px;
     padding: 10px 15px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: bold;
     color: white;
     cursor: pointer;
