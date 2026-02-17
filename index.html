@@ -12,34 +12,29 @@
 <body>
 
     <div id="login-screen" class="screen active">
-    <div class="login-container">
-        <div class="logo">
-            <span style="font-weight: 500; color: #e54848;">Nippon</span><span style="color: #fff;">Sync</span>
-        </div>
-
-        <div class="input-group">
-            <input type="email" id="email" placeholder="E-mail">
-        </div>
-
-        <div class="input-group">
-            <input type="password" id="password" placeholder="Senha">
-        </div>
-
-        <button onclick="handleLogin()" style="margin-bottom: 10px;">ENTRAR</button>
-        
-        <p style="color: #ddd; font-size: 12px; margin-top: 10px; cursor: pointer;" onclick="handleSignup()">
-            Primeiro Acesso
-        </p>
-
-        <div class="forgot" onclick="alert('Entre em contato com o suporte para resetar sua senha.')">
-            Esqueci a senha
+        <div class="login-container">
+            <div class="logo">
+                <span style="font-weight: 500; color: #e54848;">Nippon</span><span style="color: #fff;">Sync</span>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="E-mail">
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Senha">
+            </div>
+            <button onclick="handleLogin()" style="margin-bottom: 10px;">ENTRAR</button>
+            <p style="color: #ddd; font-size: 12px; margin-top: 10px; cursor: pointer;" onclick="handleSignup()">
+                Primeiro Acesso
+            </p>
+            <div class="forgot" onclick="alert('Entre em contato com o suporte para resetar sua senha.')">
+                Esqueci a senha
+            </div>
         </div>
     </div>
-</div>
 
     <div id="block-screen" class="screen">
         <div class="block-card">
-            <i class="fas fa-lock-alt icon-lock"></i>
+            <i class="fas fa-lock icon-lock"></i>
             <h2>Assinatura Pendente</h2>
             <p>Regularize seu acesso para gerenciar seus clientes e estoque.</p>
             <button onclick="irParaPagamento()" class="btn-pay">LIBERAR ACESSO (PIX)</button>
@@ -47,58 +42,19 @@
     </div>
 
     <div id="main-app" class="screen">
-        <header class="app-header">
-            <div class="header-content">
-                <div class="p-4 flex gap-2">
-    <button onclick="abrirConfiguracoes()" class="flex-1 bg-gray-200 text-navy p-2 rounded-lg text-xs font-bold">
-        <i class="fas fa-cog"></i> CONFIGURAÇÕES
-    </button>
-</div>
-
-<div id="modal-config" class="modal-overlay hidden">
-    <div class="modal-card">
-        <h2>Ajustes e Estoque</h2>
-        <p>Gerencie seu estoque e sua mensagem de aviso.</p>
-
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
-            <label style="font-size: 11px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL</label>
-            <div class="buttons-row">
-                <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                    <label>ALCALINE (9m)</label>
-                    <input type="number" id="stock-9" placeholder="0">
-                </div>
-                <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                    <label>MAX (1 ano)</label>
-                    <input type="number" id="stock-12" placeholder="0">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>MENSAGEM DE AVISO (WhatsApp)</label>
-            <textarea id="msg-custom-input" rows="5" 
-                style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none; font-family: sans-serif;"></textarea>
-        </div>
-
-        <div class="buttons-row">
-            <button onclick="salvarTudoConfig()" class="btn btn-confirm">SALVAR TUDO</button>
-            <button onclick="fecharConfig()" class="btn btn-close">CANCELAR</button>
-        </div>
-    </div>
-</div>
-               
+        <header>
             <div class="logo-header">
-        <span style="font-weight: 500; color: #e54848;">Nippon</span><span style="color: #fff;">Sync</span>
-    </div>
-    
-    <div class="header-actions">
-        <div class="stock-info" onclick="abrirConfiguracoes()">
-            <i class="fas fa-box"></i>
-            <span id="estoque-badge">0</span>
-        </div>
-        <button onclick="abrirConfiguracoes()" class="btn-icon"><i class="fas fa-cog"></i></button>
-        <button onclick="logout()" class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
-    </div>
+                <span style="font-weight: 500; color: #e54848;">Nippon</span><span style="color: #fff;">Sync</span>
+            </div>
+            
+            <div class="header-actions">
+                <div class="stock-info" onclick="abrirConfiguracoes()">
+                    <i class="fas fa-box"></i>
+                    <span id="estoque-badge">0</span>
+                </div>
+                <button onclick="abrirConfiguracoes()" class="btn-icon"><i class="fas fa-cog"></i></button>
+                <button onclick="logout()" class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
         </header>
 
         <main class="container">
@@ -126,74 +82,69 @@
         </main>
     </div>
 
- <div id="modal-cliente" class="modal-overlay hidden">
-    <div class="modal-card">
-        <h2 id="modal-title">Novo Cliente</h2>
-        <p>Preencha os dados abaixo para organizar as trocas de refil.</p>
+    <div id="modal-config" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2>Ajustes e Estoque</h2>
+            <p>Gerencie seu estoque e sua mensagem de aviso.</p>
 
-        <div class="form-group">
-            <label>NOME DO CLIENTE</label>
-            <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
-        </div>
-
-        <div class="form-group">
-            <label>WHATSAPP</label>
-            <input type="tel" id="whatsapp-cliente" placeholder="DDD + Número">
-        </div>
-
-        <div class="form-group">
-            <label>DATA DA ÚLTIMA TROCA / VENDA</label>
-            <input type="date" id="data-venda">
-        </div>
-
-        <div class="form-group">
-            <label>MODELO DO REFIL</label>
-            <div class="buttons-row">
-                <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model flex-1">ALCALINE (9m)</button>
-                <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model flex-1">MAX (1 ano)</button>
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
+                <label style="font-size: 11px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL</label>
+                <div class="buttons-row">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label>ALCALINE (9m)</label>
+                        <input type="number" id="stock-9" placeholder="0">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label>MAX (1 ano)</label>
+                        <input type="number" id="stock-12" placeholder="0">
+                    </div>
+                </div>
             </div>
-            <input type="hidden" id="modelo-refil-valor" value="9">
-        </div>
 
-        <div class="form-group">
-            <label>QUANTIDADE</label>
-            <input type="number" id="qtd-refil" value="1" min="1">
-        </div>
+            <div class="form-group">
+                <label>MENSAGEM DE AVISO (WhatsApp)</label>
+                <textarea id="msg-custom-input" rows="5" 
+                    style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none; font-family: sans-serif;"></textarea>
+            </div>
 
-        <div class="buttons-row">
-            <button onclick="salvarCliente()" class="btn btn-confirm">SALVAR</button>
-            <button onclick="fecharModal()" class="btn btn-close">CANCELAR</button>
-        </div>
-    </div>
-</div>
-
-   <div id="modal-estoque" class="modal-overlay hidden">
-    <div class="modal-card">
-        <h2>Meu Estoque</h2>
-        <p>Atualize a quantidade de refis que você tem em mãos.</p>
-
-        <div class="form-group">
-            <label>ALCALINE (9 meses)</label>
-            <input type="number" id="stock-9" placeholder="0" min="0">
-        </div>
-
-        <div class="form-group">
-            <label>MAX (1 ano)</label>
-            <input type="number" id="stock-12" placeholder="0" min="0">
-        </div>
-
-        <div class="buttons-row">
-            <button onclick="atualizarEstoqueLocal()" class="btn btn-confirm">SALVAR ESTOQUE</button>
-            <button onclick="fecharEstoque()" class="btn btn-close">FECHAR</button>
+            <div class="buttons-row">
+                <button onclick="salvarTudoConfig()" class="btn btn-confirm">SALVAR TUDO</button>
+                <button onclick="fecharConfig()" class="btn btn-close">CANCELAR</button>
+            </div>
         </div>
     </div>
-</div>
 
-    <div id="modal-msg" class="modal hidden">
-        <div class="modal-content">
-            <h3>Mensagem Padrão</h3>
-            <textarea id="msg-template" rows="5" class="w-full border p-2 rounded"></textarea>
-            <button onclick="salvarMensagem()" class="btn-primary">SALVAR MENSAGEM</button>
+    <div id="modal-cliente" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2 id="modal-title">Novo Cliente</h2>
+            <div class="form-group">
+                <label>NOME DO CLIENTE</label>
+                <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
+            </div>
+            <div class="form-group">
+                <label>WHATSAPP</label>
+                <input type="tel" id="whatsapp-cliente" placeholder="DDD + Número">
+            </div>
+            <div class="form-group">
+                <label>DATA DA ÚLTIMA TROCA</label>
+                <input type="date" id="data-venda">
+            </div>
+            <div class="form-group">
+                <label>MODELO DO REFIL</label>
+                <div class="buttons-row">
+                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9m)</button>
+                    <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">MAX (1 ano)</button>
+                </div>
+                <input type="hidden" id="modelo-refil-valor" value="9">
+            </div>
+            <div class="form-group">
+                <label>QUANTIDADE</label>
+                <input type="number" id="qtd-refil" value="1" min="1">
+            </div>
+            <div class="buttons-row">
+                <button onclick="salvarCliente()" class="btn btn-confirm">SALVAR</button>
+                <button onclick="fecharModal()" class="btn btn-close">CANCELAR</button>
+            </div>
         </div>
     </div>
 
