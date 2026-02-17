@@ -241,19 +241,19 @@ window.renderClientes = async () => {
                 <div class="card-linha">
                     <div>
                         <h4 style="color: var(--azul-marinho); margin:0">${item.nome}</h4>
-                        <small>${item.qtd}x ${item.modelo == 9 ? 'Alcaline' : 'Alcaline Max'}</small>
+                        <small>${item.qtd} Und Refil ${item.modelo == 9 ? 'Alcaline' : 'Alcaline Max'}</small>
                     </div>
                     <div style="display:flex; gap:10px">
                         <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp">
                             <i class="fab fa-whatsapp"></i>
                         </button>
-                        <button onclick="window.editarCliente('${id}', '${item.nome}', '${item.whatsapp}', '${item.dataVenda}', ${item.modelo}, ${item.qtd})" style="border:none; background:none; color:#777; cursor:pointer">
+                        <button onclick="window.editarCliente('${id}', '${item.nome}', '${item.whatsapp}', '${item.dataVenda}', ${item.modelo}, ${item.qtd})" class="btn-round btn-edit">
                             <i class="fas fa-edit"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-linha" style="margin-top:10px">
-                    <span style="font-size: 13px">Troca: <b>${prox.toLocaleDateString()}</b></span>
+                    <span style="font-size: 17px">Troca: <b>${prox.toLocaleDateString()}</b></span>
                     <button onclick="confirmarReposicao('${id}', ${item.modelo}, ${item.qtd})" class="btn-round btn-repo">REPOSIÇÃO</button>
                 </div>
             </div>`;
