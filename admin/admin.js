@@ -1,93 +1,50 @@
-import { auth, db } from "../firebase-config.js"; // Caminho voltando uma pasta
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+import { db } from "../firebase-config.js";
 
-console.log("Teste de conexão DB:", db);
+const auth = getAuth();
 
-const areaLogin = document.getElementById('area-login-admin');
-const areaPainel = document.getElementById('area-painel-admin');
-
-// Monitor de Sessão
 onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().role === 'admin') {
-            mostrarPainel();
-        } else {
-            // Se logar mas não for admin, expulsa
-            alert("Acesso Negado: Você não tem permissão de administrador.");
-            await signOut(auth);
-            location.reload();
-        }
-    } else {
-        areaLogin.classList.remove('hidden');
-        areaPainel.classList.add('hidden');
-    }
+  if (!user) {
+    alert("Acesso negado.");
+    window.location.href = "../index.html";
+    return;
+  }
+
+  carregarUsuarios();
 });
 
-// Função de Login Exclusiva para Admin
-window.loginAdmin = async () => {
-    const e = document.getElementById('admin-email').value;
-    const s = document.getElementById('admin-senha').value;
-    window.loginAdmin = loginAdmin;
-    
-    try {
-        await signInWithEmailAndPassword(auth, e, s);
-        // O onAuthStateChanged cuidará do resto
-    } catch (error) {
-        alert("Erro ao acessar: " + error.message);
-    }
-};
+async function carregarUsuarios() {
+  const snap = await getDocs(collection(db, "users"));
+  const container = document.getElementById("admin-users");
+  container.innerHTML = "";
 
-async function mostrarPainel() {
-    areaLogin.classList.add('hidden');
-    areaPainel.classList.remove('hidden');
-    renderUsuarios();
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+
+    container.innerHTML += `
+      <div style="border-bottom:1px solid #ddd;padding:10px 0;">
+        <b>${d.email}</b><br>
+        Status: <b>${d.subscriptionStatus}</b><br>
+        <button onclick="ativar('${docSnap.id}')">Ativar</button>
+        <button onclick="desativar('${docSnap.id}')">Desativar</button>
+      </div>
+    `;
+  });
 }
 
-async function renderUsuarios() {
-    const lista = document.getElementById('lista-usuarios');
-    try {
-        console.log("Buscando usuários...");
-        const snap = await getDocs(collection(db, "users"));
-        console.log("Usuários encontrados:", snap.size);
-        
-        if (snap.empty) {
-            lista.innerHTML = "<p>Nenhum distribuidor cadastrado.</p>";
-            return;
-        }
-
-        lista.innerHTML = "";
-        snap.forEach(d => {
-            const u = d.data();
-            // Pula você mesmo (o admin) na lista
-            if (u.role === 'admin') return;
-
-            lista.innerHTML += `
-                <div class="user-card" style="background:white; padding:15px; margin-bottom:10px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <strong>${u.email}</strong><br>
-                        <small>Status: ${u.pago ? 'Ativo' : 'Pendente'}</small>
-                    </div>
-                    <button onclick="toggleAcesso('${d.id}', ${u.pago})" class="btn-repo">
-                        ${u.pago ? 'Bloquear' : 'Liberar'}
-                    </button>
-                </div>`;
-        });
-    } catch (e) {
-        console.error("Erro ao listar usuários:", e);
-        lista.innerHTML = "<p>Erro ao carregar lista. Verifique as Regras de Segurança no Firebase.</p>";
-    }
-}
-window.toggleAcesso = async (id, statusAtual) => {
-    await updateDoc(doc(db, "users", id), { pago: !statusAtual });
-    renderUsuarios();
+window.ativar = async (uid) => {
+  await updateDoc(doc(db, "users", uid), {
+    subscriptionStatus: "active"
+  });
+  alert("Ativado");
+  carregarUsuarios();
 };
 
-window.toggleStatus = async (id, statusAtual) => {
-    const novoStatus = statusAtual === 'pendente' ? 'ativo' : 'pendente';
-    await updateDoc(doc(db, "users", id), { status: novoStatus });
-    renderUsuarios();
+window.desativar = async (uid) => {
+  await updateDoc(doc(db, "users", uid), {
+    subscriptionStatus: "inactive"
+  });
+  alert("Desativado");
+  carregarUsuarios();
 };
-
-window.logoutAdmin = () => signOut(auth);
