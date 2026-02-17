@@ -1,72 +1,41 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ControlRefil</title>
-
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a4c96">
-
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js');
-  });
-}
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ControlRefil</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-screen" class="screen active">
-  <div class="login-container">
-    <div class="logo">
-      <span style="color:#e54848;">Control</span><span style="color:#0a4c96;">Refil</span>
-    </div>
-
-    <div class="input-group">
-      <input type="email" id="email" placeholder="E-mail">
-    </div>
-
-    <div class="input-group">
-      <input type="password" id="password" placeholder="Senha">
-    </div>
-
-    <button onclick="handleLogin()">ENTRAR</button>
-
-    <p style="color:#ddd;font-size:12px;margin-top:10px;cursor:pointer;" onclick="handleSignup()">
-      Primeiro Acesso
-    </p>
-
-    <div class="forgot">
-      Esqueci a senha
-    </div>
+  <!-- TELA LOGIN -->
+  <div id="loginScreen">
+    <h2>Entrar</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button id="loginBtn">Entrar</button>
+    <button id="registerBtn">Criar Conta</button>
   </div>
-</div>
 
-<!-- BLOQUEIO -->
-<div id="block-screen" class="screen">
-  <div class="block-card">
-    <i class="fas fa-lock icon-lock"></i>
-    <h2>Assinatura Pendente</h2>
-    <p>Regularize seu acesso para continuar.</p>
-    <button onclick="irParaPagamento()" class="btn-pay">
-      LIBERAR ACESSO (PIX)
-    </button>
+  <!-- BLOQUEIO ASSINATURA -->
+  <div id="blockedScreen" style="display:none;">
+    <h2>Assinatura Inativa</h2>
+    <p>Para ativar sua conta:</p>
+    <p>Envie o valor via Pix para:</p>
+    <strong>SEU-PIX-AQUI</strong>
+    <p>Após pagamento, envie o comprovante.</p>
+    <button onclick="logout()">Sair</button>
   </div>
-</div>
 
-<!-- APP PRINCIPAL -->
-<div id="main-app" class="screen">
-  <!-- Seu layout permanece exatamente igual -->
-</div>
+  <!-- APP -->
+  <div id="appScreen" style="display:none;">
+    <h1>ControlRefil</h1>
+    <button onclick="logout()">Sair</button>
+    <!-- resto do app continua aqui -->
+  </div>
 
-<script type="module" src="app.js"></script>
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
