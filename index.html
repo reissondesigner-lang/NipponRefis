@@ -1,37 +1,72 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlRefil</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ControlRefil</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a4c96">
+
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
 </head>
 <body>
 
-  <div id="login-screen">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Senha">
-    <button id="login-btn">Entrar</button>
+<!-- LOGIN -->
+<div id="login-screen" class="screen active">
+  <div class="login-container">
+    <div class="logo">
+      <span style="color:#e54848;">Control</span><span style="color:#0a4c96;">Refil</span>
+    </div>
+
+    <div class="input-group">
+      <input type="email" id="email" placeholder="E-mail">
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Senha">
+    </div>
+
+    <button onclick="handleLogin()">ENTRAR</button>
+
+    <p style="color:#ddd;font-size:12px;margin-top:10px;cursor:pointer;" onclick="handleSignup()">
+      Primeiro Acesso
+    </p>
+
+    <div class="forgot">
+      Esqueci a senha
+    </div>
   </div>
+</div>
 
-  <div id="block-screen" style="display:none;">
-    <h2>Assinatura Inativa</h2>
-    <p>Regularize sua assinatura para continuar usando o sistema.</p>
-    <button id="renew-btn">Renovar Assinatura</button>
+<!-- BLOQUEIO -->
+<div id="block-screen" class="screen">
+  <div class="block-card">
+    <i class="fas fa-lock icon-lock"></i>
+    <h2>Assinatura Pendente</h2>
+    <p>Regularize seu acesso para continuar.</p>
+    <button onclick="irParaPagamento()" class="btn-pay">
+      LIBERAR ACESSO (PIX)
+    </button>
   </div>
+</div>
 
-  <div id="app-screen" style="display:none;">
-    <h1>ControlRefil</h1>
+<!-- APP PRINCIPAL -->
+<div id="main-app" class="screen">
+  <!-- Seu layout permanece exatamente igual -->
+</div>
 
-    <input type="text" id="cliente-nome" placeholder="Nome do Cliente">
-    <button id="add-cliente">Adicionar Cliente</button>
-
-    <ul id="lista-clientes"></ul>
-
-    <button id="logout-btn">Sair</button>
-  </div>
-
-  <script type="module" src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
