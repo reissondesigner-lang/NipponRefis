@@ -32,15 +32,47 @@ body { background-color: var(--fundo); }
 
 /* Cabeçalho */
 header {
-    background-color: var(--azul-marinho);
-    color: white;
-    padding: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Logo na esquerda, ações na direita */
     align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    background-color: #0a4c96;
+    padding: 10px 20px;
+    color: white;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaço entre os ícones */
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.stock-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#estoque-badge {
+    background: #e53935;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
 }
 
 /* Dashboard */
