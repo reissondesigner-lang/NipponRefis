@@ -304,4 +304,17 @@ window.notificar = (n, t, d, m) => {
 window.logout = () => { if (confirm("Sair?")) signOut(auth); };
 
 // Inicialização
-window.selecionarModelo(9);
+window.selecionarModelo = (meses) => {
+    document.getElementById('modelo-refil-valor').value = meses;
+    
+    const btn9 = document.getElementById('btn-9m');
+    const btn12 = document.getElementById('btn-12m');
+
+    if (meses === 9) {
+        btn9.classList.add('btn-model-active');
+        btn12.classList.remove('btn-model-active');
+    } else {
+        btn12.classList.add('btn-model-active');
+        btn9.classList.remove('btn-model-active');
+    }
+};
