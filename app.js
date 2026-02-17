@@ -71,7 +71,7 @@ window.handleLogin = () => {
     const e = document.getElementById('email').value;
     const s = document.getElementById('password').value;
     signInWithEmailAndPassword(auth, e, s).catch(err => alert("Erro: " + err.message));
-    window.handleLogin = handleLogin;
+    
 };
 
 window.handleSignup = () => {
@@ -86,11 +86,14 @@ onAuthStateChanged(auth, async (user) => {
     if (user) {
         usuarioLogado = user;
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().pago === false) {
+        const dados = userDoc.data();
+
+        // Verifica se está ativo (pode ser o campo 'pago' ou 'status')
+        if (dados && (dados.status === 'pendente' || dados.pago === false) && dados.role !== 'admin') {
             showBlock();
         } else {
-            msgPadrao = userDoc.data()?.msgCustom || msgPadrao;
-            document.getElementById('estoque-badge').innerText = (userDoc.data()?.estoque9 || 0) + (userDoc.data()?.estoque12 || 0);
+            msgPadrao = dados?.msgCustom || msgPadrao;
+            document.getElementById('estoque-badge').innerText = (dados?.estoque9 || 0) + (dados?.estoque12 || 0);
             showApp();
             renderClientes();
         }
@@ -343,9 +346,10 @@ window.selecionarModelo = (meses) => {
     }
 };
 
-// ... (seu config e inicialização do firebase)
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-// No final do seu app.js
-export { auth, db };
+window.handleSignup = handleSignup;
+window.handleLogin = handleLogin;
+window.renderClientes = renderClientes;
+window.logout = logout;
+window.notificar = notificar;
+window.confirmarReposicao = confirmarReposicao;
+window.salvarCliente = salvarCliente;
