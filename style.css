@@ -56,11 +56,37 @@ header {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 15px; /* Espaço entre os ícones */
+    gap: 12px;
 }
 
-.logo-header span {
-    display: inline-block;
+.btn-estoque-config {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15); /* Fundo levemente branco transparente */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-estoque-config:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+#estoque-badge {
+    background: #e53935; /* Vermelho Nippon */
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
 }
 
 .btn-icon {
@@ -69,7 +95,15 @@ header {
     color: white;
     font-size: 1.2rem;
     cursor: pointer;
-    padding: 5px;
+    display: flex;
+    align-items: center;
+    opacity: 0.8;
+    transition: 0.3s;
+}
+
+.btn-icon:hover {
+    opacity: 1;
+    color: #ffcccc;
 }
 
 .stock-info {
