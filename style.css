@@ -197,8 +197,8 @@ header {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.status-vencido { border-left-color: #dc3545; }
-.status-hoje { border-left-color: #ffc107; }
+.status-vencido { border-left-color: #e53935; }
+.status-hoje { border-left-color: #007bff; }
 .status-ok { border-left-color: #28a745; }
 
 .card-linha {
