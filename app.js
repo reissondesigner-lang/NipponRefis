@@ -205,57 +205,53 @@ window.renderClientes = async () => {
     const hoje = new Date(); hoje.setHours(0,0,0,0);
 
     snap.forEach(d => {
+        const id = d.id;
         const item = d.data();
-        const prox = item.proximaTroca.toDate(); prox.setHours(0,0,0,0);
-        const diff = Math.ceil((prox - hoje) / (1000*60*60*24));
-        const dados = docSnapshot.data(); 
-        const id = docSnapshot.id;
-
-        // Agora criamos o card usando a variável 'dados'
-        const card = document.createElement('div');
-        card.className = 'cliente-card';
-        card.innerHTML = `
-            <div class="cliente-info">
-                <strong>${dados.nome}</strong>
-                <span>${dados.whatsapp}</span>
-                <small>Próxima troca: ${dados.proximaTroca}</small>
-            </div>
-            <div class="cliente-acoes">
-                <button onclick="window.editarCliente('${id}', '${dados.nome}', '${dados.whatsapp}', '${dados.dataVenda}', ${dados.modelo}, ${dados.qtd})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button onclick="window.deletarCliente('${id}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `;
-        lista.appendChild(card);
-    });
-};
         
-        let cls = diff < 0 ? "status-vencido" : (diff <= 7 ? "status-hoje" : "status-ok");
-        if(diff < 0) a++; else if(diff === 0) h++; else if(diff <= 7) s++;
+        // Converte a data (ajuste se for String ou Timestamp do Firebase)
+        let prox;
+        if (item.proximaTroca.toDate) {
+            prox = item.proximaTroca.toDate();
+        } else {
+            prox = new Date(item.proximaTroca + "T00:00:00");
+        }
+        
+        prox.setHours(0,0,0,0);
+        const diff = Math.ceil((prox - hoje) / (1000*60*60*24));
 
+        // Lógica dos contadores do Dashboard
+        if(diff < 0) a++; 
+        else if(diff === 0) h++; 
+        else if(diff <= 7) s++;
+
+        // Define a classe de cor lateral do card
+        let cls = diff < 0 ? "status-vencido" : (diff <= 7 ? "status-hoje" : "status-ok");
+
+        // Gera o HTML do card único
         lista.innerHTML += `
             <div class="cliente-card ${cls}">
                 <div class="card-linha">
                     <div>
-                        <h4 style="color: var(--azul-marinho)">${item.nome}</h4>
-                        <small>${item.qtd}x ${item.modelo==9?'Alcaline':'Alcaline Max'}</small>
+                        <h4 style="color: var(--azul-marinho); margin:0">${item.nome}</h4>
+                        <small>${item.qtd}x ${item.modelo == 9 ? 'Alcaline' : 'Alcaline Max'}</small>
                     </div>
-                    <div style="display:flex; gap:5px">
-                        <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp"><i class="fab fa-whatsapp"></i></button>
-                        <button onclick="window.editarCliente('${doc.id}', '${dados.nome}', '${dados.whatsapp}', '${dados.dataVenda}', ${dados.modelo}, ${dados.qtd})">
-                        <i class="fas fa-edit"></i>
+                    <div style="display:flex; gap:10px">
+                        <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button onclick="window.editarCliente('${id}', '${item.nome}', '${item.whatsapp}', '${item.dataVenda}', ${item.modelo}, ${item.qtd})" style="border:none; background:none; color:#777; cursor:pointer">
+                            <i class="fas fa-edit"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-linha" style="margin-top:10px">
-                    <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
-                    <button onclick="confirmarReposicao('${d.id}',${item.modelo},${item.qtd})" class="btn-round btn-repo">REPOSIÇÃO</button>
+                    <span style="font-size: 13px">Troca: <b>${prox.toLocaleDateString()}</b></span>
+                    <button onclick="confirmarReposicao('${id}', ${item.modelo}, ${item.qtd})" class="btn-round btn-repo">REPOSIÇÃO</button>
                 </div>
             </div>`;
     });
+
+    // Atualiza os números coloridos do Dashboard
     document.getElementById('count-hoje').innerText = h;
     document.getElementById('count-atrasados').innerText = a;
     document.getElementById('count-7dias').innerText = s;
