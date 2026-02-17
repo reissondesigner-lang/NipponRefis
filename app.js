@@ -10,7 +10,7 @@ const db = getFirestore(app);
 let usuarioLogado = null;
 let msgPadrao = "Olá [NOME], Seu refil [MODELO] vence em [DATA]. Vamos trocar?";
 
-// Navegação Otimizada
+// --- NAVEGAÇÃO ---
 const showScreen = (id) => {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -31,7 +31,7 @@ window.handleSignup = () => {
     }).catch(err => alert("Erro: " + err.message));
 };
 
-window.logout = () => { if(confirm("Sair?")) signOut(auth); };
+window.logout = () => confirm("Sair do sistema?") && signOut(auth);
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -53,8 +53,8 @@ onAuthStateChanged(auth, async (user) => {
 // --- CLIENTES & ESTOQUE ---
 window.selecionarModelo = (meses) => {
     document.getElementById('modelo-refil-valor').value = meses;
-    document.getElementById('btn-9m').className = meses === 9 ? 'btn-model btn-model-active' : 'btn-model';
-    document.getElementById('btn-12m').className = meses === 12 ? 'btn-model btn-model-active' : 'btn-model';
+    document.querySelectorAll('.btn-model').forEach(b => b.classList.remove('btn-model-active'));
+    document.getElementById(meses === 9 ? 'btn-9m' : 'btn-12m').classList.add('btn-model-active');
 };
 
 window.abrirModalCadastro = () => {
@@ -62,46 +62,37 @@ window.abrirModalCadastro = () => {
     document.getElementById('nome-cliente').value = "";
     document.getElementById('whatsapp-cliente').value = "";
     document.getElementById('data-venda').value = new Date().toISOString().split('T')[0];
-    document.getElementById('qtd-refil').value = 1;
+    document.getElementById('btn-salvar-cliente').onclick = salvarCliente;
     selecionarModelo(9);
-    document.getElementById('btn-salvar-cliente').onclick = () => salvarCliente(null);
     document.getElementById('modal-cliente').classList.remove('hidden');
 };
 
 window.fecharModal = () => document.getElementById('modal-cliente').classList.add('hidden');
 
-async function salvarCliente(id = null) {
-    const btn = document.getElementById('btn-salvar-cliente');
-    btn.disabled = true;
-    
-    const dados = {
-        nome: document.getElementById('nome-cliente').value,
-        whatsapp: document.getElementById('whatsapp-cliente').value,
-        modelo: parseInt(document.getElementById('modelo-refil-valor').value),
-        qtd: parseInt(document.getElementById('qtd-refil').value) || 1,
-        ultimaTroca: new Date(document.getElementById('data-venda').value + 'T12:00:00'),
-    };
-    dados.proximaTroca = new Date(dados.ultimaTroca);
-    dados.proximaTroca.setMonth(dados.proximaTroca.getMonth() + dados.modelo);
-    dados.userId = usuarioLogado.uid;
+const salvarCliente = async () => {
+    const nome = document.getElementById('nome-cliente').value;
+    const tel = document.getElementById('whatsapp-cliente').value;
+    const modelo = parseInt(document.getElementById('modelo-refil-valor').value);
+    const qtd = parseInt(document.getElementById('qtd-refil').value) || 1;
+    const dataVendaStr = document.getElementById('data-venda').value;
 
-    try {
-        if (id) {
-            await updateDoc(doc(db, "clientes", id), dados);
-        } else {
-            await addDoc(collection(db, "clientes"), dados);
-            // Baixa estoque apenas no novo
-            const campo = dados.modelo === 9 ? 'estoque9' : 'estoque12';
-            const userRef = doc(db, "users", usuarioLogado.uid);
-            const userSnap = await getDoc(userRef);
-            await updateDoc(userRef, { [campo]: (userSnap.data()[campo] || 0) - dados.qtd });
-        }
-        fecharModal();
-    } catch (e) { alert("Erro ao salvar"); }
-    btn.disabled = false;
-}
+    const proxima = new Date(dataVendaStr + 'T12:00:00');
+    proxima.setMonth(proxima.getMonth() + modelo);
 
-function renderClientes() {
+    await addDoc(collection(db, "clientes"), { 
+        userId: usuarioLogado.uid, nome, whatsapp: tel, modelo, qtd, 
+        ultimaTroca: new Date(dataVendaStr + 'T12:00:00'), proximaTroca: proxima 
+    });
+
+    const campo = modelo === 9 ? 'estoque9' : 'estoque12';
+    const uRef = doc(db, "users", usuarioLogado.uid);
+    const uSnap = await getDoc(uRef);
+    await updateDoc(uRef, { [campo]: (uSnap.data()[campo] || 0) - qtd });
+
+    fecharModal();
+};
+
+window.renderClientes = () => {
     const q = query(collection(db, "clientes"), where("userId", "==", usuarioLogado.uid), orderBy("proximaTroca", "asc"));
     onSnapshot(q, (snap) => {
         const lista = document.getElementById('lista-clientes');
@@ -111,27 +102,27 @@ function renderClientes() {
 
         snap.forEach(d => {
             const item = d.data();
-            const prox = item.proximaTroca.toDate(); prox.setHours(0,0,0,0);
+            const prox = item.proximaTroca.toDate();
             const diff = Math.ceil((prox - hoje) / (1000*60*60*24));
-            const cls = diff < 0 ? "status-vencido" : (diff <= 7 ? "status-hoje" : "status-ok");
             
-            if(diff < 0) a++; else if(diff <= 0) h++; else if(diff <= 7) s++;
+            let cls = diff < 0 ? "status-vencido" : (diff < 8 ? "status-hoje" : "status-ok");
+            if(diff < 0) a++; else if(diff === 0) h++; else if(diff <= 7) s++;
 
             lista.innerHTML += `
                 <div class="cliente-card ${cls}">
                     <div class="card-linha">
                         <div>
-                            <h4 style="color:var(--azul-marinho)">${item.nome}</h4>
-                            <small>${item.qtd}x ${item.modelo==9?'Alcaline':'Alcaline Max'}</small>
+                            <h4 style="color: var(--azul-marinho)">${item.nome}</h4>
+                            <small>${item.qtd}x ${item.modelo==9?'9m':'12m'}</small>
                         </div>
-                        <div style="display:flex; gap:8px">
+                        <div style="display:flex; gap:5px">
                             <button onclick="notificar('${item.nome}','${item.whatsapp}','${prox.toLocaleDateString()}','${item.modelo}')" class="btn-round btn-wpp"><i class="fab fa-whatsapp"></i></button>
                             <button onclick="editarCliente('${d.id}')" class="btn-round btn-edit"><i class="fas fa-edit"></i></button>
                         </div>
                     </div>
                     <div class="card-linha">
                         <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
-                        <button onclick="confirmarReposicao('${d.id}',${item.modelo},${item.qtd})" class="btn-repo">REPOSIÇÃO</button>
+                        <button onclick="confirmarReposicao('${d.id}',${item.modelo},${item.qtd})" class="btn-round btn-repo">REPOSIÇÃO</button>
                     </div>
                 </div>`;
         });
@@ -139,27 +130,44 @@ function renderClientes() {
         document.getElementById('count-atrasados').innerText = a;
         document.getElementById('count-7dias').innerText = s;
     });
-}
+};
 
 window.editarCliente = async (id) => {
-    const d = (await getDoc(doc(db, "clientes", id))).data();
-    document.getElementById('nome-cliente').value = d.nome;
-    document.getElementById('whatsapp-cliente').value = d.whatsapp;
-    document.getElementById('data-venda').value = d.ultimaTroca.toDate().toISOString().split('T')[0];
-    selecionarModelo(d.modelo);
-    document.getElementById('btn-salvar-cliente').onclick = () => salvarCliente(id);
+    const docSnap = await getDoc(doc(db, "clientes", id));
+    const dados = docSnap.data();
+    document.getElementById('nome-cliente').value = dados.nome;
+    document.getElementById('whatsapp-cliente').value = dados.whatsapp;
+    document.getElementById('data-venda').value = dados.ultimaTroca.toDate().toISOString().split('T')[0];
+    selecionarModelo(dados.modelo);
     document.getElementById('modal-cliente').classList.remove('hidden');
+    document.getElementById('btn-salvar-cliente').onclick = () => finalizarEdicao(id);
+};
+
+const finalizarEdicao = async (id) => {
+    const modelo = parseInt(document.getElementById('modelo-refil-valor').value);
+    const dataVendaStr = document.getElementById('data-venda').value;
+    const proxima = new Date(dataVendaStr + 'T12:00:00');
+    proxima.setMonth(proxima.getMonth() + modelo);
+
+    await updateDoc(doc(db, "clientes", id), {
+        nome: document.getElementById('nome-cliente').value,
+        whatsapp: document.getElementById('whatsapp-cliente').value,
+        ultimaTroca: new Date(dataVendaStr + 'T12:00:00'),
+        proximaTroca: proxima,
+        modelo: modelo,
+        qtd: parseInt(document.getElementById('qtd-refil').value)
+    });
+    fecharModal();
 };
 
 window.confirmarReposicao = async (id, mod, qtd) => {
-    if(!confirm("Confirmar troca?")) return;
+    if(!confirm("Trocar agora?")) return;
     const nova = new Date();
     const prox = new Date(); prox.setMonth(prox.getMonth() + mod);
     await updateDoc(doc(db, "clientes", id), { ultimaTroca: nova, proximaTroca: prox });
     const uRef = doc(db, "users", usuarioLogado.uid);
     const uSnap = await getDoc(uRef);
-    const campo = mod === 9 ? 'estoque9' : 'estoque12';
-    await updateDoc(uRef, { [campo]: (uSnap.data()[campo] || 0) - qtd });
+    await updateDoc(uRef, { [mod === 9 ? 'estoque9' : 'estoque12']: (uSnap.data()[mod === 9 ? 'estoque9' : 'estoque12'] || 0) - qtd });
 };
 
 window.notificar = (n, t, d, m) => {
@@ -168,7 +176,8 @@ window.notificar = (n, t, d, m) => {
 };
 
 window.abrirConfiguracoes = async () => {
-    const d = (await getDoc(doc(db, "users", usuarioLogado.uid))).data();
+    const userDoc = await getDoc(doc(db, "users", usuarioLogado.uid));
+    const d = userDoc.data();
     document.getElementById('stock-9').value = d.estoque9 || 0;
     document.getElementById('stock-12').value = d.estoque12 || 0;
     document.getElementById('msg-custom-input').value = d.msgCustom || msgPadrao;
@@ -178,13 +187,10 @@ window.abrirConfiguracoes = async () => {
 window.fecharConfig = () => document.getElementById('modal-config').classList.add('hidden');
 
 window.salvarTudoConfig = async () => {
-    const userRef = doc(db, "users", usuarioLogado.uid);
-    const s9 = parseInt(document.getElementById('stock-9').value) || 0;
-    const s12 = parseInt(document.getElementById('stock-12').value) || 0;
-    const novaMsg = document.getElementById('msg-custom-input').value;
-    
-    await updateDoc(userRef, { msgCustom: novaMsg, estoque9: s9, estoque12: s12 });
-    document.getElementById('estoque-badge').innerText = s9 + s12;
-    msgPadrao = novaMsg;
+    await updateDoc(doc(db, "users", usuarioLogado.uid), {
+        msgCustom: document.getElementById('msg-custom-input').value,
+        estoque9: parseInt(document.getElementById('stock-9').value) || 0,
+        estoque12: parseInt(document.getElementById('stock-12').value) || 0
+    });
     fecharConfig();
 };
