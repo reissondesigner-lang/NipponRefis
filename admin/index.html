@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - ControlRefil</title>
+    <link rel="stylesheet" href="../style.css"> <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body { background: #f0f2f5; padding: 20px; font-family: sans-serif; }
+        .admin-container { max-width: 800px; margin: 0 auto; }
+        .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .user-card { 
+            background: white; padding: 20px; border-radius: 12px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; 
+            align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-pendente { background: #ffeaa7; color: #d63031; }
+        .status-ativo { background: #55efc4; color: #00b894; }
+        .btn-voltar { text-decoration: none; color: #0a4c96; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="header-admin">
+            <a href="../" class="btn-voltar"><i class="fas fa-arrow-left"></i> Voltar ao App</a>
+            <h2>Gestão de Distribuidores</h2>
+        </div>
+
+        <div id="loader">Carregando usuários...</div>
+        <div id="lista-usuarios"></div>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
