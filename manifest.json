@@ -3,8 +3,8 @@
   "short_name": "ControlRefil",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0a4c96",
-  "theme_color": "#0a4c96",
+  "background_color": "#051c63",
+  "theme_color": "#051c63",
   "description": "Gestão inteligente de estoque e trocas de refil.",
   "icons": [
     {
