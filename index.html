@@ -62,19 +62,21 @@
 
         <main class="container">
             <div class="dashboard">
-                <div class="dash-card warning">
-                    <span id="count-hoje">0</span>
-                    <label>Hoje</label>
-                </div>
-                <div class="dash-card danger">
-                    <span id="count-atrasados">0</span>
-                    <label>Atrasados</label>
-                </div>
-                <div class="dash-card info">
-                    <span id="count-7dias">0</span>
-                    <label>7 Dias</label>
-                </div>
-            </div>
+    <div class="card">
+        <div class="number-box azul" id="count-hoje">0</div>
+        <div class="label">Hoje</div>
+    </div>
+
+    <div class="card">
+        <div class="number-box vermelho" id="count-atrasados">0</div>
+        <div class="label">Atrasados</div>
+    </div>
+
+    <div class="card">
+        <div class="number-box amarelo" id="count-7dias">0</div>
+        <div class="label">Próximos 7 dias</div>
+    </div>
+</div>
 
             <button onclick="abrirModalCadastro()" class="btn-add">
                 <i class="fas fa-plus-circle"></i> NOVO CLIENTE
