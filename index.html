@@ -1,179 +1,37 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ControlRefil</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="data:,">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a4c96">
-
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('ControlRefil: Service Worker Ativo!'))
-        .catch(err => console.log('Erro no SW:', err));
-    });
-  }
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ControlRefil</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <div id="login-screen" class="screen active">
-        <div class="login-container">
-            <div class="logo">
-                <span style="color: #e54848;">Control</span><span style="color: #0a4c96;">Refil</span>
-            </div>
-            <div class="input-group">
-                <input type="email" id="email" placeholder="E-mail">
-            </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="Senha">
-            </div>
-            <button onclick="handleLogin()" style="margin-bottom: 10px;">ENTRAR</button>
-            <p style="color: #ddd; font-size: 12px; margin-top: 10px; cursor: pointer;" onclick="handleSignup()">
-                Primeiro Acesso
-            </p>
-            <div class="forgot" onclick="alert('Entre em contato com o suporte para resetar sua senha.')">
-                Esqueci a senha
-            </div>
-        </div>
-    </div>
+  <div id="login-screen">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Senha">
+    <button id="login-btn">Entrar</button>
+  </div>
 
-    <div id="block-screen" class="screen">
-        <div class="block-card">
-            <i class="fas fa-lock icon-lock"></i>
-            <h2>Assinatura Pendente</h2>
-            <p>Regularize seu acesso para gerenciar seus clientes e estoque.</p>
-            <button onclick="irParaPagamento()" class="btn-pay">LIBERAR ACESSO (PIX)</button>
-        </div>
-    </div>
+  <div id="block-screen" style="display:none;">
+    <h2>Assinatura Inativa</h2>
+    <p>Regularize sua assinatura para continuar usando o sistema.</p>
+    <button id="renew-btn">Renovar Assinatura</button>
+  </div>
 
-    <div id="main-app" class="screen">
-        <header>
-            <div class="logo-header">
-                <span style="color: #e53935;">Control</span><span style="color: #0a4c96;">Refil</span>
-            </div>
-            
-            <div class="header-actions">
-    <button onclick="abrirConfiguracoes()" class="btn-estoque-config">
-        <i class="fas fa-box"></i>
-        <span id="estoque-badge">0</span>
-        <i class="fas fa-cog" style="margin-left: 5px; opacity: 0.7; font-size: 12px;"></i>
-    </button>
-    
-    <button onclick="logout()" class="btn-icon">
-        <i class="fas fa-sign-out-alt"></i>
-    </button>
-</div>
-        </header>
+  <div id="app-screen" style="display:none;">
+    <h1>ControlRefil</h1>
 
-        <main class="container">
-            <div class="dashboard">
+    <input type="text" id="cliente-nome" placeholder="Nome do Cliente">
+    <button id="add-cliente">Adicionar Cliente</button>
 
-     <div class="card">
-        <div class="number-box azul" id="count-7dias">0</div>
-        <div class="label">Próximos 7 dias</div>
-    </div>
-                
-    <div class="card">
-        <div class="number-box amarelo" id="count-hoje">0</div>
-        <div class="label">Hoje</div>
-    </div>
+    <ul id="lista-clientes"></ul>
 
-    <div class="card">
-        <div class="number-box vermelho" id="count-atrasados">0</div>
-        <div class="label">Atrasados</div>
-    </div>
+    <button id="logout-btn">Sair</button>
+  </div>
 
-   
-</div>
-
-            <button onclick="abrirModalCadastro()" class="btn-add">
-                <i class="fas fa-plus-circle"></i> NOVO CLIENTE
-            </button>
-
-            <div id="lista-clientes" class="lista-container">
-                </div>
-        </main>
-    </div>
-
-    <div id="modal-config" class="modal-overlay hidden">
-        <div class="modal-card">
-            <h2>Ajustes e Estoque</h2>
-            <p>Gerencie seu estoque e sua mensagem de aviso.</p>
-
-            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
-                <label style="font-size: 15px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL DE REFIS</label>
-                <div class="buttons-row">
-                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>ALCALINE (9 meses)</label>
-                        <input type="number" id="stock-9" placeholder="0">
-                    </div>
-                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>Alcaline MAX (1 ano)</label>
-                        <input type="number" id="stock-12" placeholder="0">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>MENSAGEM DE AVISO (WhatsApp)</label>
-                <textarea id="msg-custom-input" rows="5" 
-                    style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none; font-family: sans-serif;"></textarea>
-            </div>
-
-            <div class="buttons-row">
-                <button onclick="salvarTudoConfig()" class="btn btn-confirm">SALVAR TUDO</button>
-                <button onclick="fecharConfig()" class="btn btn-close">CANCELAR</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-cliente" class="modal-overlay hidden">
-        <div class="modal-card">
-            <h2 id="modal-title">CLIENTE</h2>
-            <div class="form-group">
-                <label>NOME DO CLIENTE</label>
-                <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
-            </div>
-            <div class="form-group">
-                <label>WHATSAPP</label>
-                <input type="tel" id="whatsapp-cliente" placeholder="DDD + Número">
-            </div>
-            <div class="form-group">
-                <label>DATA DA ÚLTIMA TROCA</label>
-                <input type="date" id="data-venda">
-            </div>
-            <div class="form-group">
-                <label>MODELO DO REFIL</label>
-                <div class="buttons-row">
-                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9 meses)</button>
-                    <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">ALCALINE MAX (1 ano)</button>
-                </div>
-                <input type="hidden" id="modelo-refil-valor" value="9">
-            </div>
-            <div class="form-group">
-                <label>QUANTIDADE</label>
-                <input type="number" id="qtd-refil" value="1" min="1">
-            </div>
-            <div class="buttons-row">
-                <button onclick="salvarCliente()" class="btn btn-confirm">SALVAR</button>
-                <button onclick="fecharModal()" class="btn btn-close">CANCELAR</button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
