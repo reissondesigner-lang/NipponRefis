@@ -128,23 +128,31 @@ window.fecharModal = () => {
 };
 
 window.editarCliente = (id, nome, whatsapp, data, modelo, qtd) => {
-    console.log("Editando cliente:", id); // Para debug
-    clienteEmEdicaoId = id; // Armazena o ID globalmente
+    clienteEmEdicaoId = id; // Armazena o ID para o salvamento saber que é uma edição
 
-    // Preenche o modal com os dados atuais
+    // 1. FORMATAR A DATA PARA O INPUT (Garantir YYYY-MM-DD)
+    // Se a data vier do Firebase como objeto, convertemos. Se for string, limpamos.
+    let dataFormatada = "";
+    if (data) {
+        // Pega apenas os primeiros 10 caracteres (caso venha algo como 2023-10-25T14:30...)
+        dataFormatada = data.split('T')[0]; 
+    }
+
+    // 2. PREENCHER OS CAMPOS DO MODAL
     document.getElementById('modal-title').innerText = "Editar Cliente";
-    document.getElementById('nome-cliente').value = nome;
-    document.getElementById('whatsapp-cliente').value = whatsapp;
-    document.getElementById('data-venda').value = data;
-    document.getElementById('qtd-refil').value = qtd;
+    document.getElementById('nome-cliente').value = nome || "";
+    document.getElementById('whatsapp-cliente').value = whatsapp || "";
+    document.getElementById('data-venda').value = dataFormatada; // Aqui a data aparece!
+    document.getElementById('qtd-refil').value = qtd || 1;
     
-    // Atualiza o valor oculto do modelo e a aparência dos botões
+    // 3. ATUALIZAR MODELO E VISUAL DOS BOTÕES
     document.getElementById('modelo-refil-valor').value = modelo;
-    window.selecionarModelo(modelo); // Chama a função que pinta os botões de 9m ou 12m
+    if (window.selecionarModelo) {
+        window.selecionarModelo(modelo);
+    }
 
-    // Abre o modal
+    // 4. MOSTRAR O MODAL
     document.getElementById('modal-cliente').classList.remove('hidden');
-    window.scrollTo(0, 0); 
 };
 
 window.salvarCliente = async () => {
