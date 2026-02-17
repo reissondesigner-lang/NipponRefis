@@ -8,7 +8,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let usuarioLogado = null;
-let msgPadrao = "Olá [NOME], Seu refil [MODELO] vence em [DATA]. Vamos trocar?";
+let msgPadrao = "Olá [NOME], Seu refil [MODELO] vence em [DATA]. Vamos agendar a reposição pra hoje ou amanhã?";
 
 // --- NAVEGAÇÃO (Mantendo sua lógica original) ---
 function showApp() {
