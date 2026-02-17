@@ -1,4 +1,4 @@
-import { auth, db } from "../app.js"; 
+import { auth, db } from "../firebase-config.js"; // Caminho voltando uma pasta
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
