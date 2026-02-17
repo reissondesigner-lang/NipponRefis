@@ -128,22 +128,51 @@ header {
 
 /* Dashboard */
 .dashboard {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    padding: 15px;
+    display: flex;
+    justify-content: center; /* Centraliza os cards no meio da tela */
+    gap: 15px;               /* Espaçamento entre os cards */
+    padding: 20px 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.dash-card {
-    background: white;
-    padding: 10px;
-    border-radius: 12px;
+.card {
+    flex: 1;                 /* Faz os cards terem o mesmo tamanho */
+    max-width: 120px;        /* Limita a largura para não ficar gigante no PC */
     text-align: center;
-    border-bottom: 4px solid var(--azul-claro);
 }
 
-.dash-card b { display: block; font-size: 1.2rem; color: var(--azul-marinho); }
-.dash-card span { font-size: 0.7rem; color: #666; font-weight: bold; }
+.number-box {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.label {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+}
+
+/* Cores específicas solicitadas */
+.number-box.azul {
+    background-color: #007bff; /* Azul vibrante */
+}
+
+.number-box.vermelho {
+    background-color: #e53935; /* Vermelho NipponSync */
+}
+
+.number-box.amarelo {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;               /* Texto escuro no amarelo para dar leitura */
+}
 
 /* Botão Adicionar */
 .btn-add {
