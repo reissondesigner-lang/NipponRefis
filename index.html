@@ -2,22 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Control Refil</title>
-
-    <meta name="theme-color" content="#0a4c96">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Control Refil">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <link rel="manifest" href="manifest.json">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,10 +17,10 @@
                 <span style="color: #e54848;">Control</span><span style="color: #0a4c96;">Refil</span>
             </div>
             <div class="input-group">
-                <input type="email" id="email" placeholder="E-mail" autocomplete="email">
+                <input type="email" id="email" placeholder="E-mail">
             </div>
             <div class="input-group">
-                <input type="password" id="password" placeholder="Senha" autocomplete="current-password">
+                <input type="password" id="password" placeholder="Senha">
             </div>
             <button onclick="handleLogin()" style="margin-bottom: 10px;">ENTRAR</button>
             <p style="color: #ddd; font-size: 12px; margin-top: 10px; cursor: pointer;" onclick="handleSignup()">
@@ -59,35 +48,35 @@
             </div>
             
             <div class="header-actions">
-                <button onclick="abrirConfiguracoes()" class="btn-estoque-config" aria-label="Estoque e Configurações">
-                    <i class="fas fa-box"></i>
-                    <span id="estoque-badge">0</span>
-                    <i class="fas fa-cog" style="margin-left: 5px; opacity: 0.7; font-size: 12px;"></i>
-                </button>
-                
-                <button onclick="logout()" class="btn-icon" aria-label="Sair">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
+    <button onclick="abrirConfiguracoes()" class="btn-estoque-config">
+        <i class="fas fa-box"></i>
+        <span id="estoque-badge">0</span>
+        <i class="fas fa-cog" style="margin-left: 5px; opacity: 0.7; font-size: 12px;"></i>
+    </button>
+    
+    <button onclick="logout()" class="btn-icon">
+        <i class="fas fa-sign-out-alt"></i>
+    </button>
+</div>
         </header>
 
         <main class="container">
             <div class="dashboard">
-                <div class="card">
-                    <div class="number-box azul" id="count-hoje">0</div>
-                    <div class="label">Hoje</div>
-                </div>
+    <div class="card">
+        <div class="number-box azul" id="count-hoje">0</div>
+        <div class="label">Hoje</div>
+    </div>
 
-                <div class="card">
-                    <div class="number-box vermelho" id="count-atrasados">0</div>
-                    <div class="label">Atrasados</div>
-                </div>
+    <div class="card">
+        <div class="number-box vermelho" id="count-atrasados">0</div>
+        <div class="label">Atrasados</div>
+    </div>
 
-                <div class="card">
-                    <div class="number-box amarelo" id="count-7dias">0</div>
-                    <div class="label">Próximos 7 dias</div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="number-box amarelo" id="count-7dias">0</div>
+        <div class="label">Próximos 7 dias</div>
+    </div>
+</div>
 
             <button onclick="abrirModalCadastro()" class="btn-add">
                 <i class="fas fa-plus-circle"></i> NOVO CLIENTE
@@ -107,18 +96,18 @@
                 <label style="font-size: 11px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL</label>
                 <div class="buttons-row">
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label for="stock-9">ALCALINE (9m)</label>
+                        <label>ALCALINE (9m)</label>
                         <input type="number" id="stock-9" placeholder="0">
                     </div>
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label for="stock-12">MAX (1 ano)</label>
+                        <label>MAX (1 ano)</label>
                         <input type="number" id="stock-12" placeholder="0">
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="msg-custom-input">MENSAGEM DE AVISO (WhatsApp)</label>
+                <label>MENSAGEM DE AVISO (WhatsApp)</label>
                 <textarea id="msg-custom-input" rows="5" 
                     style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 13px; outline: none; font-family: sans-serif;"></textarea>
             </div>
@@ -134,27 +123,27 @@
         <div class="modal-card">
             <h2 id="modal-title">CLIENTE</h2>
             <div class="form-group">
-                <label for="nome-cliente">NOME DO CLIENTE</label>
+                <label>NOME DO CLIENTE</label>
                 <input type="text" id="nome-cliente" placeholder="Ex: João Silva">
             </div>
             <div class="form-group">
-                <label for="whatsapp-cliente">WHATSAPP</label>
+                <label>WHATSAPP</label>
                 <input type="tel" id="whatsapp-cliente" placeholder="DDD + Número">
             </div>
             <div class="form-group">
-                <label for="data-venda">DATA DA ÚLTIMA TROCA</label>
+                <label>DATA DA ÚLTIMA TROCA</label>
                 <input type="date" id="data-venda">
             </div>
             <div class="form-group">
                 <label>MODELO DO REFIL</label>
                 <div class="buttons-row">
-                    <button type="button" id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9 meses)</button>
-                    <button type="button" id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">ALCALINE MAX (1 ano)</button>
+                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9 meses)</button>
+                    <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">ALCALINE MAX (1 ano)</button>
                 </div>
                 <input type="hidden" id="modelo-refil-valor" value="9">
             </div>
             <div class="form-group">
-                <label for="qtd-refil">QUANTIDADE</label>
+                <label>QUANTIDADE</label>
                 <input type="number" id="qtd-refil" value="1" min="1">
             </div>
             <div class="buttons-row">
@@ -163,16 +152,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW ativo!', reg.scope))
-                    .catch(err => console.error('Erro no SW:', err));
-            });
-        }
-    </script>
 
     <script type="module" src="app.js"></script>
 </body>
