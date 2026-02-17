@@ -32,18 +32,35 @@ body { background-color: var(--fundo); }
 
 /* Cabeçalho */
 header {
-    display: flex;
-    justify-content: space-between; /* Logo na esquerda, ações na direita */
-    align-items: center;
+    display: flex !important;
+    flex-direction: row !important; /* Garante que seja uma linha */
+    justify-content: space-between !important; /* Logo na esquerda, Ícones na direita */
+    align-items: center !important;
     background-color: #0a4c96;
     padding: 10px 20px;
     color: white;
+    width: 100%;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-header {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
     gap: 15px; /* Espaço entre os ícones */
+}
+
+.logo-header span {
+    display: inline-block;
 }
 
 .btn-icon {
