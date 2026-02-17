@@ -1,50 +1,42 @@
-import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { db } from "../firebase-config.js";
+import { auth, db } from '../firebase-config.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+  collection,
+  getDocs,
+  doc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const auth = getAuth();
+const usersList = document.getElementById("usersList");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    alert("Acesso negado.");
-    window.location.href = "../index.html";
+    alert("Não autenticado");
     return;
   }
 
-  carregarUsuarios();
-});
+  // AQUI você pode validar se é admin consultando /admins/{uid}
 
-async function carregarUsuarios() {
-  const snap = await getDocs(collection(db, "users"));
-  const container = document.getElementById("admin-users");
-  container.innerHTML = "";
+  const snapshot = await getDocs(collection(db, "users"));
 
-  snap.forEach(docSnap => {
-    const d = docSnap.data();
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
 
-    container.innerHTML += `
-      <div style="border-bottom:1px solid #ddd;padding:10px 0;">
-        <b>${d.email}</b><br>
-        Status: <b>${d.subscriptionStatus}</b><br>
-        <button onclick="ativar('${docSnap.id}')">Ativar</button>
-        <button onclick="desativar('${docSnap.id}')">Desativar</button>
-      </div>
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <p>${data.email} - Pago: ${data.pago}</p>
+      <button onclick="ativar('${docSnap.id}')">Ativar</button>
     `;
+
+    usersList.appendChild(div);
   });
-}
+});
 
 window.ativar = async (uid) => {
   await updateDoc(doc(db, "users", uid), {
-    subscriptionStatus: "active"
+    pago: true
   });
-  alert("Ativado");
-  carregarUsuarios();
-};
 
-window.desativar = async (uid) => {
-  await updateDoc(doc(db, "users", uid), {
-    subscriptionStatus: "inactive"
-  });
-  alert("Desativado");
-  carregarUsuarios();
+  alert("Usuário ativado!");
+  location.reload();
 };
