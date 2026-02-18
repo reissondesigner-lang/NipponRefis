@@ -1,23 +1,21 @@
-const CACHE_NAME = "admin-cache-v1";
+const CACHE_NAME = 'nipponsync-admin-v1';
 
-const ASSETS_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./admin.js"
+const assets = [
+  './',
+  './index.html',
+  './admin.js'
 ];
 
-// INSTALAÇÃO
-self.addEventListener("install", (event) => {
+self.addEventListener('install', event => {
   self.skipWaiting();
 
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS_TO_CACHE))
+      .then(cache => cache.addAll(assets))
   );
 });
 
-// ATIVAÇÃO
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
@@ -33,30 +31,23 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// FETCH
-self.addEventListener("fetch", (event) => {
+self.addEventListener('fetch', event => {
 
-  // Só intercepta requisições do próprio admin
-  if (!event.request.url.includes("/admin/")) return;
+  // Só trata requisições do admin
+  if (!event.request.url.includes('/admin/')) return;
 
   event.respondWith(
     caches.match(event.request)
       .then(response => {
         return response || fetch(event.request)
-          .then(fetchResponse => {
-
-            // Atualiza cache dinamicamente
+          .then(fetchRes => {
             return caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, fetchResponse.clone());
-                return fetchResponse;
+                cache.put(event.request, fetchRes.clone());
+                return fetchRes;
               });
-
           })
-          .catch(() => {
-            // Fallback simples offline
-            return caches.match("./index.html");
-          });
+          .catch(() => caches.match('./index.html'));
       })
   );
 });
