@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin ControlRefil</title>
-</head>
-<body>
+<div id="admin-screen" class="screen">
+  <header>
+    <h2>PAINEL ADMIN</h2>
+    <button onclick="logout()">Sair</button>
+  </header>
 
-<h2>Painel Admin</h2>
-
-<div id="usersList"></div>
-
-<script type="module" src="../firebase-config.js"></script>
-<script type="module" src="admin.js"></script>
-
-</body>
-</html>
+  <div class="admin-stats">
+    <h3>Usuários</h3>
+    <div id="lista-usuarios"></div>
+  </div>
+</div>
