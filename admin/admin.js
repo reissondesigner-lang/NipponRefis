@@ -188,6 +188,6 @@ window.logout = async () => {
   }
 };
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw-admin.js")
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/NipponRefis/sw.js');
 }
