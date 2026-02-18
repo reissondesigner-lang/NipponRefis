@@ -341,7 +341,7 @@ window.editarCliente = async (id) => {
   document.getElementById("data-venda").value = cliente.dataVenda.split("T")[0];
   document.getElementById("qtd-refil").value = cliente.qtd;
 
-window.selecionarModelo = (meses) => {
+window.selecionarModelo = (modelo) => {
     document.getElementById('modelo-refil-valor').value = meses;
     document.querySelectorAll('.btn-model').forEach(btn => btn.classList.remove('btn-model-active'));
     if(meses === 9) document.getElementById('btn-9m').classList.add('btn-model-active');
