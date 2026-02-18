@@ -89,7 +89,8 @@ window.handleSignup = async () => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
 
     await setDoc(doc(db, "users", cred.user.uid), {
-      email:,
+      email: email,
+      role: "user",
       pago: false,
       createdAt: Timestamp.now()
     });
