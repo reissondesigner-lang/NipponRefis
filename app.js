@@ -392,8 +392,9 @@ window.reposicaoCliente = async (id) => {
   const cliente = docSnap.data();
   const modeloNumero = cliente.modelo;
   const nova = new Date().toISOString().split('T')[0];
-  const prox = new Date().toISOString().split('T')[0];
-  prox.setMonth(prox.getMonth() + modeloNumero);  // Adiciona o número de meses
+  const proxDate = new Date();
+  proxDate.setMonth(proxDate.getMonth() + modeloNumero); // Adiciona o número de meses à data
+  const prox = proxDate.toISOString().split('T')[0];  // Formata a data para o formato desejado
 
   if (!confirm("Confirmar troca de refil?")) return;
   
