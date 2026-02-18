@@ -36,9 +36,9 @@ const mainApp = document.getElementById("main-app");
 // ============================
 
 function showLogin() {
-  loginScreen.classList.add("active");
-  blockScreen.classList.remove("active");
-  mainApp.classList.remove("active");
+  if (loginScreen) loginScreen.classList.add("active");
+  if (blockScreen) blockScreen.classList.remove("active");
+  if (mainApp) mainApp.classList.remove("active");
 }
 
 function showBlock() {
@@ -48,11 +48,10 @@ function showBlock() {
 }
 
 function showApp() {
-  loginScreen.classList.remove("active");
-  blockScreen.classList.remove("active");
-  mainApp.classList.add("active");
+  if (loginScreen) loginScreen.classList.remove("active");
+  if (blockScreen) blockScreen.classList.remove("active");
+  if (mainApp) mainApp.classList.add("active");
 }
-
 
 // ============================
 // LOGIN / CADASTRO
