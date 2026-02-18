@@ -390,8 +390,11 @@ async function finalizarEdicao(id) {
 window.reposicaoCliente = async (id) => {
   const docSnap = await getDoc(doc(db, "clientes", id));
   const cliente = docSnap.data();
-  if (!docSnap.exists()) return;
-  clienteReposicao = id;
+  if (!docSnap.exists()) {
+    alert("Cliente não existe" + id);
+    return;
+  }
+
   
   if (!confirm("Confirmar troca de refil?")) return;
   
