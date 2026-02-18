@@ -219,7 +219,7 @@ window.renderClientes = async () => {
     </div>
   </div>
 `;
-
+    });
     document.getElementById("count-hoje").innerText = hojeCount;
     document.getElementById("count-atrasados").innerText = atrasadoCount;
     document.getElementById("count-7dias").innerText = semanaCount;
