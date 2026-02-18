@@ -330,7 +330,6 @@ window.enviarWhatsApp = async (id) => {
 
   const numero = item.whatsapp.replace(/\D/g, "");
 
-  const numero = item.whatsapp.replace(/\D/g, "");
   window.open(`https://wa.me/55${numero}?text=${encodeURIComponent(msg)}`, "_blank");
 
 };
