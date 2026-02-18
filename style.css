@@ -225,7 +225,7 @@ header {
     gap: 5px;
 }
 
-.btn-wpp { background-color: #25d366; padding: 10px; }
+.btn-wpp { background-color: #159232; padding: 10px; }
 .btn-edit { background-color: #6c757d; padding: 10px; }
 .btn-repo { background-color: var(--azul-marinho); text-transform: uppercase; }
 
