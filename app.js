@@ -341,13 +341,11 @@ window.editarCliente = async (id) => {
   document.getElementById("data-venda").value = cliente.dataVenda.split("T")[0];
   document.getElementById("qtd-refil").value = cliente.qtd;
 
-  selecionarModelo(cliente.modelo);
-
-document.getElementById('modelo-refil-valor').value = meses;
+window.selecionarModelo = (meses) => {
+    document.getElementById('modelo-refil-valor').value = meses;
     document.querySelectorAll('.btn-model').forEach(btn => btn.classList.remove('btn-model-active'));
     if(meses === 9) document.getElementById('btn-9m').classList.add('btn-model-active');
     else document.getElementById('btn-12m').classList.add('btn-model-active');
-  abrirModalCadastro();
 };
 
 window.reposicaoCliente = async (id, modelo) => {
