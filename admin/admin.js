@@ -130,7 +130,7 @@ window.renderUsuarios = async () => {
           <span>Status: <b> ${u.pago ? "Ativo" : "Bloqueado"}</b></span>
         
         <div class="card-linha">
-          <button onclick="togglePagamento('${d.id}', ${u.pago})" class="${u.pago ? "btn-round btn-edit" : "btn-round btn-wpp" }" style="margin-right:8px">
+          <button onclick="togglePagamento('${d.id}', ${u.pago})" class="${u.pago ? "btn-round btn-edit" : "btn-round btn-wpp" }" style="margin:8px">
             ${u.pago ? "Bloquear" : "Ativar"}
           </button>
 
