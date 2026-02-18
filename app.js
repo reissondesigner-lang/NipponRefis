@@ -213,7 +213,7 @@ window.renderClientes = async () => {
         ✏️ Editar
       </button>
 
-      <button onclick="reposicaoCliente('${d.id}', ${item.modelo})" class="btn-small">
+      <button onclick="reposicaoCliente('${d.id}', '${item.modelo}')" class="btn-small">
         🔄 Reposição
       </button>
     </div>
