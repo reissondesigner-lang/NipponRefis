@@ -90,9 +90,6 @@ window.handleSignup = async () => {
     await setDoc(doc(db, "users", cred.user.uid), {
       email,
       pago: false,
-      estoque9: 0,
-      estoque12: 0,
-      msgCustom: msgPadrao,
       createdAt: Timestamp.now()
     });
 
@@ -127,10 +124,7 @@ onAuthStateChanged(auth, async (user) => {
     const data = docSnap.data();
 
     if (data.pago === true) {
-      msgPadrao = data.msgCustom || msgPadrao;
-      document.getElementById("estoque-badge").innerText =
-        (data.estoque9 || 0) + (data.estoque12 || 0);
-
+            
       showApp();
       renderClientes();
     } else {
@@ -289,38 +283,6 @@ window.salvarCliente = async () => {
 
   fecharModal();
   renderClientes();
-};
-
-// ============================
-// CONFIGURAÇÕES
-// ============================
-
-window.abrirConfiguracoes = () => {
-  document.getElementById("modal-config").classList.remove("hidden");
-};
-
-window.fecharConfig = () => {
-  document.getElementById("modal-config").classList.add("hidden");
-};
-
-window.salvarTudoConfig = async () => {
-  if (!usuarioLogado) return;
-
-  const estoque9 = parseInt(document.getElementById("stock-9").value) || 0;
-  const estoque12 = parseInt(document.getElementById("stock-12").value) || 0;
-  const msgCustom = document.getElementById("msg-custom-input").value;
-
-  await updateDoc(doc(db, "users", usuarioLogado.uid), {
-    estoque9,
-    estoque12,
-    msgCustom
-  });
-
-  document.getElementById("estoque-badge").innerText =
-    estoque9 + estoque12;
-
-  fecharConfig();
-  alert("Configurações salvas.");
 };
 
 window.enviarWhatsApp = async (id) => {
