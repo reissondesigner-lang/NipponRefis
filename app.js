@@ -1,42 +1,8 @@
 import { auth, db } from "./firebase-config.js";
-import { initializeApp } from "firebase/app";
-import { 
-  initializeFirestore, 
-  persistentLocalCache 
-} from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {collection, addDoc, query, where, getDocs, doc, updateDoc, getDoc, setDoc, orderBy, Timestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  doc,
-  updateDoc,
-  getDoc,
-  setDoc,
-  orderBy,
-  Timestamp,
-  deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔹 Inicializa app
-const app = initializeApp(firebaseConfig);
-
-// 🔥 ATIVA CACHE OFFLINE AQUI
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache()
-});
-
-// 🔹 Auth
-const auth = getAuth(app);
 
 let usuarioLogado = null;
 let msgPadrao = "Olá [NOME], Seu refil [MODELO] vence em [DATA]. Vamos trocar?";
