@@ -1,8 +1,8 @@
 {
   "name": "ControlRefil Admin",
   "short_name": "ControlAdmin",
-  "start_url": "/admin/index.html",
-  "scope": "/admin/",
+  "start_url": "/NipponRefis/admin/index.html",
+  "scope": "NipponRefis/admin/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
