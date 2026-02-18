@@ -183,19 +183,34 @@ window.renderClientes = async () => {
         : "status-ok";
 
       lista.innerHTML += `
-        <div class="cliente-card ${cls}">
-          <div class="card-linha">
-            <div>
-              <h4>${item.nome}</h4>
-              <small>${item.qtd} Und Refil ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
-            </div>
-          </div>
-          <div class="card-linha">
-            <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
-          </div>
-        </div>
-      `;
-    });
+  <div class="cliente-card ${cls}">
+    <div class="card-linha">
+      <div>
+        <h4>${item.nome}</h4>
+        <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
+      </div>
+    </div>
+
+    <div class="card-linha">
+      <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
+    </div>
+
+    <div class="card-actions">
+      <button onclick="enviarWhatsApp('${item.whatsapp}', '${item.nome}', '${item.modelo}', '${item.proximaTroca}')" class="btn-small">
+        📲 Enviar
+      </button>
+
+      <button onclick="editarCliente('${d.id}')" class="btn-small">
+        ✏️ Editar
+      </button>
+
+      <button onclick="reposicaoCliente('${d.id}', ${item.modelo})" class="btn-small">
+        🔄 Reposição
+      </button>
+    </div>
+  </div>
+`;
+
 
     document.getElementById("count-hoje").innerText = hojeCount;
     document.getElementById("count-atrasados").innerText = atrasadoCount;
@@ -236,15 +251,22 @@ window.salvarCliente = async () => {
   const proximaTroca = new Date(dataBase);
   proximaTroca.setMonth(proximaTroca.getMonth() + modelo);
 
-  await addDoc(collection(db, "clientes"), {
+  const dados = {
     nome,
     whatsapp,
     modelo,
     qtd,
-    dataVenda: dataVenda, // string yyyy-mm-dd
-    proximaTroca: proximaTroca.toISOString(), // string ISO
+    dataVenda,
+    proximaTroca: proximaTroca.toISOString(),
     userId: usuarioLogado.uid
-  });
+  };
+
+  if (clienteEditando) {
+    await updateDoc(doc(db, "clientes", clienteEditando), dados);
+    clienteEditando = null;
+  } else {
+    await addDoc(collection(db, "clientes"), dados);
+  }
 
   fecharModal();
   renderClientes();
@@ -280,6 +302,65 @@ window.salvarTudoConfig = async () => {
 
   fecharConfig();
   alert("Configurações salvas.");
+};
+
+window.enviarWhatsApp = (whatsapp, nome, modelo, dataTroca) => {
+  if (!whatsapp) {
+    alert("Cliente sem WhatsApp cadastrado.");
+    return;
+  }
+
+  const dataFormatada = new Date(dataTroca).toLocaleDateString();
+  const modeloNome = modelo == 9 ? "Alcaline (9 meses)" : "Alcaline Max (1 ano)";
+
+  let mensagem = msgPadrao
+    .replace("[NOME]", nome)
+    .replace("[MODELO]", modeloNome)
+    .replace("[DATA]", dataFormatada);
+
+  const numeroLimpo = whatsapp.replace(/\D/g, "");
+
+  const url = `https://wa.me/55${numeroLimpo}?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(url, "_blank");
+};
+
+window.editarCliente = async (id) => {
+  const docSnap = await getDoc(doc(db, "clientes", id));
+
+  if (!docSnap.exists()) return;
+
+  const cliente = docSnap.data();
+  clienteEditando = id;
+
+  document.getElementById("nome-cliente").value = cliente.nome;
+  document.getElementById("whatsapp-cliente").value = cliente.whatsapp;
+  document.getElementById("data-venda").value = cliente.dataVenda.split("T")[0];
+  document.getElementById("qtd-refil").value = cliente.qtd;
+
+  selecionarModelo(cliente.modelo);
+
+  document.getElementById("modal-title").innerText = "EDITAR CLIENTE";
+
+  abrirModalCadastro();
+};
+
+window.reposicaoCliente = async (id, modelo) => {
+  const novaData = prompt("Informe a nova data da venda (AAAA-MM-DD):", 
+                          new Date().toISOString().split("T")[0]);
+
+  if (!novaData) return;
+
+  const dataBase = new Date(novaData);
+  const novaTroca = new Date(dataBase);
+  novaTroca.setMonth(novaTroca.getMonth() + modelo);
+
+  await updateDoc(doc(db, "clientes", id), {
+    dataVenda: novaData,
+    proximaTroca: novaTroca.toISOString()
+  });
+
+  renderClientes();
 };
 
 
