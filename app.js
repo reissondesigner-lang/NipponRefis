@@ -358,7 +358,7 @@ window.reposicaoCliente = async (id, modelo) => {
 
   await updateDoc(doc(db, "clientes", id), {
     dataVenda: novaData,
-    proximaTroca: novaTroca.toISOString()
+    proximaTroca: novaTroca
     
   });
 
