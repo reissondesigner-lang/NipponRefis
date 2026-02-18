@@ -224,7 +224,7 @@ window.renderClientes = async () => {
   } catch (error) {
     console.error("Erro ao renderizar clientes:", error);
   }
-};
+});
 
 
 
