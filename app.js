@@ -142,61 +142,71 @@ onAuthStateChanged(auth, async (user) => {
 // ============================
 
 window.renderClientes = async () => {
-  if (!usuarioLogado) return;
+  try {
+    if (!usuarioLogado) return;
 
-  const lista = document.getElementById("lista-clientes");
-  lista.innerHTML = "";
+    const lista = document.getElementById("lista-clientes");
+    lista.innerHTML = "";
 
-  const q = query(
-    collection(db, "clientes"),
-    where("userId", "==", usuarioLogado.uid),
-    orderBy("proximaTroca", "asc")
-  );
+    const q = query(
+      collection(db, "clientes"),
+      where("userId", "==", usuarioLogado.uid),
+      orderBy("proximaTroca", "asc")
+    );
 
-  const snap = await getDocs(q);
+    const snap = await getDocs(q);
 
-  let hojeCount = 0;
-  let atrasadoCount = 0;
-  let semanaCount = 0;
+    if (snap.empty) {
+      lista.innerHTML = "<p style='text-align:center;color:#999;'>Nenhum cliente cadastrado.</p>";
+    }
 
-  const hoje = new Date();
-  hoje.setHours(0,0,0,0);
+    let hojeCount = 0;
+    let atrasadoCount = 0;
+    let semanaCount = 0;
 
-  snap.forEach(d => {
-    const item = d.data();
-    const prox = item.proximaTroca.toDate();
-    prox.setHours(0,0,0,0);
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
 
-    const diff = Math.ceil((prox - hoje)/(1000*60*60*24));
+    snap.forEach(d => {
+      const item = d.data();
+      const prox = item.proximaTroca.toDate();
+      prox.setHours(0,0,0,0);
 
-    if (diff < 0) atrasadoCount++;
-    else if (diff === 0) hojeCount++;
-    else if (diff <= 7) semanaCount++;
+      const diff = Math.ceil((prox - hoje)/(1000*60*60*24));
 
-    const cls = diff < 0 ? "status-vencido"
-      : diff === 0 ? "status-hoje"
-      : diff <= 7 ? "status-7dias"
-      : "status-ok";
+      if (diff < 0) atrasadoCount++;
+      else if (diff === 0) hojeCount++;
+      else if (diff <= 7) semanaCount++;
 
-    lista.innerHTML += `
-      <div class="cliente-card ${cls}">
-        <div class="card-linha">
-          <div>
-            <h4>${item.nome}</h4>
-            <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
+      const cls = diff < 0 ? "status-vencido"
+        : diff === 0 ? "status-hoje"
+        : diff <= 7 ? "status-7dias"
+        : "status-ok";
+
+      lista.innerHTML += `
+        <div class="cliente-card ${cls}">
+          <div class="card-linha">
+            <div>
+              <h4>${item.nome}</h4>
+              <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
+            </div>
+          </div>
+          <div class="card-linha">
+            <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
           </div>
         </div>
-        <div class="card-linha">
-          <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
-        </div>
-      </div>
-    `;
-  });
+      `;
+    });
 
-  document.getElementById("count-hoje").innerText = hojeCount;
-  document.getElementById("count-atrasados").innerText = atrasadoCount;
-  document.getElementById("count-7dias").innerText = semanaCount;
+    document.getElementById("count-hoje").innerText = hojeCount;
+    document.getElementById("count-atrasados").innerText = atrasadoCount;
+    document.getElementById("count-7dias").innerText = semanaCount;
+
+  } catch (error) {
+    console.error("Erro ao renderizar clientes:", error);
+  }
 };
+
 
 
 // ============================
@@ -239,6 +249,38 @@ window.salvarCliente = async () => {
 
   fecharModal();
   renderClientes();
+};
+
+// ============================
+// CONFIGURAÇÕES
+// ============================
+
+window.abrirConfiguracoes = () => {
+  document.getElementById("modal-config").classList.remove("hidden");
+};
+
+window.fecharConfig = () => {
+  document.getElementById("modal-config").classList.add("hidden");
+};
+
+window.salvarTudoConfig = async () => {
+  if (!usuarioLogado) return;
+
+  const estoque9 = parseInt(document.getElementById("stock-9").value) || 0;
+  const estoque12 = parseInt(document.getElementById("stock-12").value) || 0;
+  const msgCustom = document.getElementById("msg-custom-input").value;
+
+  await updateDoc(doc(db, "users", usuarioLogado.uid), {
+    estoque9,
+    estoque12,
+    msgCustom
+  });
+
+  document.getElementById("estoque-badge").innerText =
+    estoque9 + estoque12;
+
+  fecharConfig();
+  alert("Configurações salvas.");
 };
 
 
