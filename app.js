@@ -377,7 +377,7 @@ async function finalizarEdicao(id) {
     await updateDoc(doc(db, "clientes", id), {
         nome: document.getElementById('nome-cliente').value,
         whatsapp: document.getElementById('whatsapp-cliente').value,
-        ultimaTroca: dataVenda,
+        dataVenda: dataVenda,
         proximaTroca: proxima,
         modelo: modelo,
         qtd: parseInt(document.getElementById('qtd-refil').value)
@@ -399,7 +399,7 @@ window.reposicaoCliente = async (id) => {
   if (!confirm("Confirmar troca de refil?")) return;
   
     await updateDoc(doc(db, "clientes", id), {
-      ultimaTroca: nova,
+      dataVenda: nova,
       proximaTroca: prox,
     });
     renderClientes();
