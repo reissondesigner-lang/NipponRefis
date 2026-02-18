@@ -196,7 +196,7 @@ window.renderClientes = async () => {
     </div>
 
     <div class="card-actions">
-      <button onclick="enviarWhatsApp('${item.whatsapp}', '${item.nome}', '${item.modelo}', '${item.proximaTroca}')" class="btn-small">
+      <button onclick="enviarWhatsApp('${d.id}')">
         📲 Enviar
       </button>
 
@@ -304,26 +304,35 @@ window.salvarTudoConfig = async () => {
   alert("Configurações salvas.");
 };
 
-window.enviarWhatsApp = (whatsapp, nome, modelo, dataTroca) => {
-  if (!whatsapp) {
+window.enviarWhatsApp = async (id) => {
+
+  const docSnap = await getDoc(doc(db, "clientes", id));
+  if (!docSnap.exists()) return;
+
+  const item = docSnap.data();
+
+  if (!item.whatsapp) {
     alert("Cliente sem WhatsApp cadastrado.");
     return;
   }
 
-  const dataFormatada = new Date(dataTroca).toLocaleDateString();
-  const modeloNome = modelo == 9 ? "Alcaline (9 meses)" : "Alcaline Max (1 ano)";
+  const dataFormatada = new Date(item.proximaTroca).toLocaleDateString();
+  const modeloNome = item.modelo == 9
+    ? "Alcaline (9 meses)"
+    : "Alcaline Max (1 ano)";
 
   let mensagem = msgPadrao
-    .replace("[NOME]", nome)
+    .replace("[NOME]", item.nome)
     .replace("[MODELO]", modeloNome)
     .replace("[DATA]", dataFormatada);
 
-  const numeroLimpo = whatsapp.replace(/\D/g, "");
+  const numeroLimpo = item.whatsapp.replace(/\D/g, "");
 
   const url = `https://wa.me/55${numeroLimpo}?text=${encodeURIComponent(mensagem)}`;
 
   window.open(url, "_blank");
 };
+
 
 window.editarCliente = async (id) => {
   const docSnap = await getDoc(doc(db, "clientes", id));
