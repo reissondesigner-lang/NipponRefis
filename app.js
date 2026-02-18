@@ -348,17 +348,10 @@ document.getElementById('modal-cliente').classList.remove('hidden');
 
 window.reposicaoCliente = async (id, modelo) => {
   if(!confirm("Confirmar troca de refil?")) return;
-
-  const dataBase = new Date;
-  const novaTroca = new Date;
-  novaTroca.setMonth(novaTroca.getMonth() + modelo);
-
-  await updateDoc(doc(db, "clientes", id), {
-    dataVenda: dataBase,
-    proximaTroca: novaTroca
-    
-  });
-
+    const nova = new Date();
+    const prox = new Date(); 
+    prox.setMonth(prox.getMonth() + mod);
+    await updateDoc(doc(db, "clientes", id),{ ultimaTroca: nova, proximaTroca: prox });
   renderClientes();
 };
 
