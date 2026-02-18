@@ -342,9 +342,9 @@ window.editarCliente = async (id) => {
   document.getElementById("qtd-refil").value = cliente.qtd;
 
 window.selecionarModelo = (modelo) => {
-    document.getElementById('modelo-refil-valor').value = meses;
+    document.getElementById('modelo-refil-valor').value = modelo;
     document.querySelectorAll('.btn-model').forEach(btn => btn.classList.remove('btn-model-active'));
-    if(meses === 9) document.getElementById('btn-9m').classList.add('btn-model-active');
+    if(modelo === 9) document.getElementById('btn-9m').classList.add('btn-model-active');
     else document.getElementById('btn-12m').classList.add('btn-model-active');
 };
 
