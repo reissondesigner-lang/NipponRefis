@@ -213,13 +213,12 @@ window.renderClientes = async () => {
         ✏️ Editar
       </button>
 
-      <button onclick="reposicaoCliente('${d.id}', '${item.modelo}')" class="btn-small">
+      <button onclick="reposicaoCliente('${d.id}')" class="btn-small">
         🔄 Reposição
       </button>
     </div>
   </div>
 `;
-
 
     document.getElementById("count-hoje").innerText = hojeCount;
     document.getElementById("count-atrasados").innerText = atrasadoCount;
