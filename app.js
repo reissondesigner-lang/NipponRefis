@@ -387,11 +387,16 @@ async function finalizarEdicao(id) {
     document.querySelector('.btn-confirm').onclick = window.salvarCliente;
 }
 
-window.reposicaoCliente = async (id, modelo) => {
+window.reposicaoCliente = async (id) => {
+  const docSnap = await getDoc(doc(db, "clientes", id));
+  const cliente = docSnap.data();
+  if (!docSnap.exists()) return;
+  clienteReposicao = id;
+  
   if (!confirm("Confirmar troca de refil?")) return;
   
   // Verifica se modelo é um número válido
-  const modeloNumero = Number(modelo);
+  const modeloNumero = cliente.modelo;
   if (isNaN(modeloNumero)) {
     alert("Modelo inválido. Por favor, insira um número válido." + modelo);
     return;
