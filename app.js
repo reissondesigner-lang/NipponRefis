@@ -390,35 +390,22 @@ async function finalizarEdicao(id) {
 window.reposicaoCliente = async (id) => {
   const docSnap = await getDoc(doc(db, "clientes", id));
   const cliente = docSnap.data();
-  if (!docSnap.exists()) {
-    alert("Cliente não existe" + id);
-    return;
-  }
-
   
   if (!confirm("Confirmar troca de refil?")) return;
   
   // Verifica se modelo é um número válido
   const modeloNumero = cliente.modelo;
-  if (isNaN(modeloNumero)) {
-    alert("Modelo inválido. Por favor, insira um número válido." + modelo);
-    return;
-  }
 
-  const nova = new Date();
+  const nova = new Date().toISOString().split('T')[0];
   const prox = new Date();
   prox.setMonth(prox.getMonth() + modeloNumero);  // Adiciona o número de meses
 
-  try {
     await updateDoc(doc(db, "clientes", id), {
       ultimaTroca: nova,
       proximaTroca: prox,
     });
     renderClientes();
-  } catch (error) {
-    console.error("Erro ao atualizar o cliente:", error);
-  }
-};
+  } 
 
   window.selecionarModelo = (modelo) => {
     document.getElementById('modelo-refil-valor').value = modelo;
