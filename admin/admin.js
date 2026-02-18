@@ -132,7 +132,7 @@ window.renderUsuarios = async () => {
             ${u.pago ? "Bloquear" : "Ativar"}
           </button>
 
-          <button onclick="excluirUsuario('${d.id}')" class="btn-small" class="btn btn-confirm">
+          <button onclick="excluirUsuario('${d.id}')" class="btn-small" class="btn-round btn-confirm">
             🗑 Excluir
           </button>
         </div>
