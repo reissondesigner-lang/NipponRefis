@@ -198,13 +198,13 @@ window.renderClientes = async () => {
         <h4>${item.nome}</h4>
         <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
       </div>
-       <div><button class="btn-round btn-repo" onclick="reposicaoCliente('${d.id}')">🔄 Reposição</button></div>
+       <div><button class="btn-round btn-repo" onclick="reposicaoCliente('${d.id}')">🔄 Repor</button></div>
     </div>
 
     <div class="card-linha">
-      <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
-      <div class="card-actions">
-      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:10px">📲 Enviar Mensagem</button>
+      <span>Próx. Troca: <b>${prox.toLocaleDateString()}</b></span>
+      <div class="card-linha">
+      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:7px">📲 Enviar Mensagem</button>
       <button class="btn-round btn-edit" onclick="editarCliente('${d.id}')">✏️ Editar</button>
       </div>
     </div>
@@ -343,8 +343,10 @@ window.editarCliente = async (id) => {
 
   selecionarModelo(cliente.modelo);
 
-  document.getElementById("modal-title").innerText = "EDITAR CLIENTE";
-
+document.getElementById('modelo-refil-valor').value = meses;
+    document.querySelectorAll('.btn-model').forEach(btn => btn.classList.remove('btn-model-active'));
+    if(meses === 9) document.getElementById('btn-9m').classList.add('btn-model-active');
+    else document.getElementById('btn-12m').classList.add('btn-model-active');
   abrirModalCadastro();
 };
 
