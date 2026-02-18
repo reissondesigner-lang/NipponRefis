@@ -178,3 +178,13 @@ window.excluirUsuario = async (uid) => {
 
 
 // ===============
+
+window.logout = async () => {
+  try {
+    await signOut(auth);
+    window.location.href = "index.html";
+  } catch (e) {
+    console.error("Erro ao sair:", e);
+  }
+};
+
