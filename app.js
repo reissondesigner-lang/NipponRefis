@@ -58,12 +58,9 @@ function showApp() {
 // ============================
 
 window.handleLogin = () => {
-  const emailInput = document.getElementById("email").value.trim();
-  const passwordInput = document.getElementById("password").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-document.getElementById("loginBtn").onclick = async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
   
   if (!email || !password) {
     alert("Preencha e-mail e senha.");
@@ -76,7 +73,7 @@ document.getElementById("loginBtn").onclick = async () => {
     alert(e.message);
   }
 };
-};
+
 
 window.handleSignup = async () => {
   const email = document.getElementById("email").value.trim();
