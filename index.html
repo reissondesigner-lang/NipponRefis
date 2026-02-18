@@ -71,7 +71,7 @@
 
      <div class="card">
         <div class="number-box azul" id="count-7dias">0</div>
-        <div class="label">Próximos 7 dias</div>
+        <div class="label">Próx. 7 dias</div>
     </div>
                 
     <div class="card">
@@ -81,7 +81,7 @@
 
     <div class="card">
         <div class="number-box vermelho" id="count-atrasados">0</div>
-        <div class="label">Atrasados</div>
+        <div class="label">Vencidos</div>
     </div>
 
    
@@ -105,11 +105,11 @@
                 <label style="font-size: 15px; font-weight: bold; color: #e53935; display: block; margin-bottom: 10px; text-align: left;">MEU ESTOQUE ATUAL DE REFIS</label>
                 <div class="buttons-row">
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>ALCALINE (9 meses)</label>
+                        <label>ALCALINE<br>(9 meses)</label>
                         <input type="number" id="stock-9" placeholder="0">
                     </div>
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>Alcaline MAX (1 ano)</label>
+                        <label>Alcaline MAX<br>(1 ano)</label>
                         <input type="number" id="stock-12" placeholder="0">
                     </div>
                 </div>
@@ -144,10 +144,10 @@
                 <input type="date" id="data-venda">
             </div>
             <div class="form-group">
-                <label>MODELO DO REFIL</label>
+                <label>MODELO DO REFIL (PRAZO REPOSIÇÃO)</label>
                 <div class="buttons-row">
-                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE (9 meses)</button>
-                    <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">ALCALINE MAX (1 ano)</button>
+                    <button id="btn-9m" onclick="selecionarModelo(9)" class="btn-model">ALCALINE<br>(9 meses)</button>
+                    <button id="btn-12m" onclick="selecionarModelo(12)" class="btn-model">ALCALINE MAX<br>(1 ano)</button>
                 </div>
                 <input type="hidden" id="modelo-refil-valor" value="9">
             </div>
