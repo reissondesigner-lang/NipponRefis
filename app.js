@@ -107,6 +107,8 @@ window.handleSignup = async () => {
 // ============================
 
 onAuthStateChanged(auth, async (user) => {
+    const adminBtn = document.getElementById("admin-btn");
+
   if (!user) {
     usuarioLogado = null;
     showLogin();
@@ -125,6 +127,12 @@ onAuthStateChanged(auth, async (user) => {
 
     const data = docSnap.data();
 
+    if (data.role === "admin") {
+      adminBtn.style.display = "block";
+    } else {
+      adminBtn.style.display = "none";
+    }
+    
     if (data.pago === true) {
             
       showApp();
