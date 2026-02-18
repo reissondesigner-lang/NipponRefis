@@ -305,7 +305,6 @@ window.salvarTudoConfig = async () => {
 };
 
 window.enviarWhatsApp = async (id) => {
-
   const docSnap = await getDoc(doc(db, "clientes", id));
   if (!docSnap.exists()) return;
 
@@ -317,20 +316,18 @@ window.enviarWhatsApp = async (id) => {
   }
 
   const dataFormatada = new Date(item.proximaTroca).toLocaleDateString();
-  const modeloNome = item.modelo == 9
-    ? "Alcaline (9 meses)"
-    : "Alcaline Max (1 ano)";
+  const modeloNome = item.modelo == 9 ? "Alcaline" : "Alcaline Max";
 
-  let mensagem = msgPadrao
+  const msg = msgPadrao
     .replace("[NOME]", item.nome)
     .replace("[MODELO]", modeloNome)
     .replace("[DATA]", dataFormatada);
 
-  const numeroLimpo = item.whatsapp.replace(/\D/g, "");
+  const numero = item.whatsapp.replace(/\D/g, "");
 
-  const url = `https://wa.me/55${numeroLimpo}?text=${encodeURIComponent(mensagem)}`;
+  const numero = item.whatsapp.replace(/\D/g, "");
+  window.open(`https://wa.me/55${numero}?text=${encodeURIComponent(msg)}`, "_blank");
 
-  window.open(url, "_blank");
 };
 
 
