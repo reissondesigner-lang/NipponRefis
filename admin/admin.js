@@ -121,7 +121,7 @@ window.renderUsuarios = async () => {
     else bloqueados++;
 
     lista.innerHTML += `
-      <div class="cliente-card">
+      <div class="cliente-card ${u.pago ? "status-ok" : "status-vencido"}">
         <div class="card">
           <h4>${u.email}</h4>
           <small>Status: ${u.pago ? "Ativo" : "Bloqueado"}</small>
@@ -132,7 +132,7 @@ window.renderUsuarios = async () => {
             ${u.pago ? "Bloquear" : "Ativar"}
           </button>
 
-          <button onclick="excluirUsuario('${d.id}')" class="btn-small" class="btn-round btn-confirm">
+          <button onclick="excluirUsuario('${d.id}')" class="btn-round btn-confirm">
             🗑 Excluir
           </button>
         </div>
