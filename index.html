@@ -164,12 +164,6 @@
 
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/NipponRefis/sw.js')
-        .then(() => console.log('SW registrado'))
-        .catch(err => console.error('Erro no SW:', err));
-    }
-  </script>
+
 </body>
 </html>
