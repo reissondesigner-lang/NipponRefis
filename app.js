@@ -42,10 +42,11 @@ function showLogin() {
 }
 
 function showBlock() {
-  loginScreen.classList.remove("active");
-  blockScreen.classList.add("active");
-  mainApp.classList.remove("active");
+  if (loginScreen) loginScreen.classList.remove("active");
+  if (blockScreen) blockScreen.classList.add("active");
+  if (mainApp) mainApp.classList.remove("active");
 }
+
 
 function showApp() {
   if (loginScreen) loginScreen.classList.remove("active");
