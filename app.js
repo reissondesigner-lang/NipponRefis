@@ -393,7 +393,7 @@ window.reposicaoCliente = async (id, modelo) => {
   // Verifica se modelo é um número válido
   const modeloNumero = Number(modelo);
   if (isNaN(modeloNumero)) {
-    alert("Modelo inválido. Por favor, insira um número válido." + modeloNumero);
+    alert("Modelo inválido. Por favor, insira um número válido." + modelo);
     return;
   }
 
