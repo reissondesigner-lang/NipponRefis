@@ -198,25 +198,18 @@ window.renderClientes = async () => {
         <h4>${item.nome}</h4>
         <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
       </div>
+       <div><button class="btn-round btn-repo" onclick="reposicaoCliente('${d.id}')">🔄 Reposição</button></div>
     </div>
 
     <div class="card-linha">
       <span>Troca: <b>${prox.toLocaleDateString()}</b></span>
+      <div class="card-actions">
+      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:10px">📲 Enviar Mensagem</button>
+      <button class="btn-round btn-edit" onclick="editarCliente('${d.id}')">✏️ Editar</button>
+      </div>
     </div>
 
-    <div class="card-actions">
-      <button onclick="enviarWhatsApp('${d.id}')">
-        📲 Enviar
-      </button>
-
-      <button onclick="editarCliente('${d.id}')">
-        ✏️ Editar
-      </button>
-
-      <button onclick="reposicaoCliente('${d.id}')">
-        🔄 Reposição
-      </button>
-    </div>
+    
   </div>
 `;
     });
