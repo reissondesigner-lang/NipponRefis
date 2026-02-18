@@ -41,6 +41,11 @@ window.ativar = async (uid) => {
   location.reload();
 };
 
+async function mostrarPainel() {
+    areaLogin.classList.add('hidden');
+    areaPainel.classList.remove('hidden');
+    renderUsuarios();
+}
 async function renderUsuarios() {
     const lista = document.getElementById('lista-usuarios');
     try {
