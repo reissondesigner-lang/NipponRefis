@@ -1,11 +1,14 @@
 {
+  "id": "/app",
   "name": "ControlRefil - Gestor de Trocas",
   "short_name": "ControlRefil",
-  "start_url": "index.html",
+  "start_url": "/NipponRefis/index.html",
+  "scope": "/NipponRefis",
   "display": "standalone",
   "background_color": "#051c63",
   "theme_color": "#051c63",
   "description": "Gestão inteligente de estoque e trocas de refil.",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
