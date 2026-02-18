@@ -1,11 +1,51 @@
-<div id="admin-screen" class="screen">
-  <header>
-    <h2>PAINEL ADMIN</h2>
-    <button onclick="logout()">Sair</button>
-  </header>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Admin - NipponRefis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-  <div class="admin-stats">
-    <h3>Usuários</h3>
-    <div id="lista-usuarios"></div>
+  <!-- LOGIN -->
+  <div id="login-screen" class="screen active">
+    <div class="card">
+      <h2>ADMIN</h2>
+      <input type="email" id="email" placeholder="E-mail">
+      <input type="password" id="password" placeholder="Senha">
+      <button onclick="handleLogin()">Entrar</button>
+    </div>
   </div>
-</div>
+
+  <!-- PAINEL ADMIN -->
+  <div id="admin-screen" class="screen">
+    <header class="top-bar">
+      <h2>PAINEL ADMIN</h2>
+      <button onclick="logout()">Sair</button>
+    </header>
+
+    <div class="dashboard">
+      <div class="stats">
+        <div class="stat-box">
+          <h3 id="total-users">0</h3>
+          <p>Usuários</p>
+        </div>
+
+        <div class="stat-box">
+          <h3 id="ativos">0</h3>
+          <p>Ativos</p>
+        </div>
+
+        <div class="stat-box">
+          <h3 id="bloqueados">0</h3>
+          <p>Bloqueados</p>
+        </div>
+      </div>
+
+      <div class="lista" id="lista-usuarios"></div>
+    </div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
