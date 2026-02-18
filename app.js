@@ -168,7 +168,7 @@ window.renderClientes = async () => {
 
     snap.forEach(d => {
       const item = d.data();
-      const prox = item.proximaTroca.toDate();
+      const prox = new Date(item.proximaTroca);
       prox.setHours(0,0,0,0);
 
       const diff = Math.ceil((prox - hoje)/(1000*60*60*24));
@@ -187,7 +187,7 @@ window.renderClientes = async () => {
           <div class="card-linha">
             <div>
               <h4>${item.nome}</h4>
-              <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
+              <small>${item.qtd} Und Refil ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
             </div>
           </div>
           <div class="card-linha">
@@ -241,8 +241,8 @@ window.salvarCliente = async () => {
     whatsapp,
     modelo,
     qtd,
-    dataVenda: Timestamp.fromDate(dataBase),
-    proximaTroca: Timestamp.fromDate(proximaTroca),
+    dataVenda: dataVenda, // string yyyy-mm-dd
+    proximaTroca: proximaTroca.toISOString(), // string ISO
     userId: usuarioLogado.uid
   });
 
