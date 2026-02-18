@@ -359,7 +359,7 @@ window.editarCliente = async (id) => {
   document.getElementById("whatsapp-cliente").value = cliente.whatsapp;
   document.getElementById("data-venda").value = cliente.dataVenda.split("T")[0];
   document.getElementById("qtd-refil").value = cliente.qtd;
-  window.selecionarModelo(modelo);
+  selecionarModelo(cliente.modelo);
   document.getElementById('modal-cliente').classList.remove('hidden');
   document.querySelector('.btn-confirm').onclick = () => finalizarEdicao(id);
 
