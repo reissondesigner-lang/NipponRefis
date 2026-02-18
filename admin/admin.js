@@ -1,94 +1,177 @@
-import { auth, db } from '../firebase-config.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { 
+import { auth, db } from "./firebase-config.js";
+
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
   collection,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const usersList = document.getElementById("usersList");
+let usuarioLogado = null;
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    alert("Não autenticado");
+const loginScreen = document.getElementById("login-screen");
+const adminScreen = document.getElementById("admin-screen");
+
+
+// ===============================
+// NAVEGAÇÃO
+// ===============================
+
+function showLogin() {
+  loginScreen.classList.add("active");
+  adminScreen.classList.remove("active");
+}
+
+function showAdmin() {
+  loginScreen.classList.remove("active");
+  adminScreen.classList.add("active");
+}
+
+
+// ===============================
+// LOGIN
+// ===============================
+
+window.handleLogin = async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    alert("Preencha e-mail e senha.");
     return;
   }
 
-  // AQUI você pode validar se é admin consultando /admins/{uid}
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (e) {
+    alert(e.message);
+  }
+};
 
-  const snapshot = await getDocs(collection(db, "users"));
 
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
+// ===============================
+// CONTROLE DE SESSÃO
+// ===============================
 
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <p>${data.email} - Pago: ${data.pago}</p>
-      <button onclick="ativar('${docSnap.id}')">Ativar</button>
-    `;
+onAuthStateChanged(auth, async (user) => {
 
-    usersList.appendChild(div);
-  });
+  if (!user) {
+    usuarioLogado = null;
+    showLogin();
+    return;
+  }
+
+  usuarioLogado = user;
+
+  const docSnap = await getDoc(doc(db, "users", user.uid));
+
+  if (!docSnap.exists()) {
+    alert("Usuário não encontrado.");
+    signOut(auth);
+    return;
+  }
+
+  const data = docSnap.data();
+
+  if (data.role !== "admin") {
+    alert("Acesso negado.");
+    signOut(auth);
+    return;
+  }
+
+  showAdmin();
+  renderUsuarios();
 });
 
-window.ativar = async (uid) => {
-  await updateDoc(doc(db, "users", uid), {
-    pago: true
+
+// ===============================
+// RENDER USUÁRIOS
+// ===============================
+
+window.renderUsuarios = async () => {
+
+  const lista = document.getElementById("lista-usuarios");
+  lista.innerHTML = "Carregando...";
+
+  const snap = await getDocs(collection(db, "users"));
+
+  lista.innerHTML = "";
+
+  let total = 0;
+  let ativos = 0;
+  let bloqueados = 0;
+
+  snap.forEach(d => {
+
+    const u = d.data();
+
+    if (u.role === "admin") return;
+
+    total++;
+
+    if (u.pago) ativos++;
+    else bloqueados++;
+
+    lista.innerHTML += `
+      <div class="cliente-card">
+        <div>
+          <h4>${u.email}</h4>
+          <small>Status: ${u.pago ? "Ativo" : "Bloqueado"}</small>
+        </div>
+
+        <div class="card-actions">
+          <button onclick="togglePagamento('${d.id}', ${u.pago})">
+            ${u.pago ? "Bloquear" : "Ativar"}
+          </button>
+
+          <button onclick="excluirUsuario('${d.id}')" class="btn-small">
+            🗑 Excluir
+          </button>
+        </div>
+      </div>
+    `;
   });
 
-  alert("Usuário ativado!");
-  location.reload();
+  document.getElementById("total-users").innerText = total;
+  document.getElementById("ativos").innerText = ativos;
+  document.getElementById("bloqueados").innerText = bloqueados;
 };
 
-async function mostrarPainel() {
-    areaLogin.classList.add('hidden');
-    areaPainel.classList.remove('hidden');
-    renderUsuarios();
-}
-async function renderUsuarios() {
-    const lista = document.getElementById('lista-usuarios');
-    try {
-        console.log("Buscando usuários...");
-        const snap = await getDocs(collection(db, "users"));
-        console.log("Usuários encontrados:", snap.size);
-        
-        if (snap.empty) {
-            lista.innerHTML = "<p>Nenhum distribuidor cadastrado.</p>";
-            return;
-        }
 
-        lista.innerHTML = "";
-        snap.forEach(d => {
-            const u = d.data();
-            // Pula você mesmo (o admin) na lista
-            if (u.role === 'admin') return;
+// ===============================
+// ATIVAR / BLOQUEAR
+// ===============================
 
-            lista.innerHTML += `
-                <div class="user-card" style="background:white; padding:15px; margin-bottom:10px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <strong>${u.email}</strong><br>
-                        <small>Status: ${u.pago ? 'Ativo' : 'Pendente'}</small>
-                    </div>
-                    <button onclick="toggleAcesso('${d.id}', ${u.pago})" class="btn-repo">
-                        ${u.pago ? 'Bloquear' : 'Liberar'}
-                    </button>
-                </div>`;
-        });
-    } catch (e) {
-        console.error("Erro ao listar usuários:", e);
-        lista.innerHTML = "<p>Erro ao carregar lista. Verifique as Regras de Segurança no Firebase.</p>";
-    }
-}
-window.toggleAcesso = async (id, statusAtual) => {
-    await updateDoc(doc(db, "users", id), { pago: !statusAtual });
-    renderUsuarios();
+window.togglePagamento = async (uid, statusAtual) => {
+
+  await updateDoc(doc(db, "users", uid), {
+    pago: !statusAtual
+  });
+
+  renderUsuarios();
 };
 
-window.toggleStatus = async (id, statusAtual) => {
-    const novoStatus = statusAtual === 'pendente' ? 'ativo' : 'pendente';
-    await updateDoc(doc(db, "users", id), { status: novoStatus });
-    renderUsuarios();
+
+// ===============================
+// EXCLUIR USUÁRIO
+// ===============================
+
+window.excluirUsuario = async (uid) => {
+
+  if (!confirm("Deseja realmente excluir este usuário?")) return;
+
+  await deleteDoc(doc(db, "users", uid));
+
+  renderUsuarios();
 };
 
-window.logoutAdmin = () => signOut(auth);
+
+// ===============
