@@ -226,7 +226,28 @@ window.renderClientes = async () => {
 // ============================
 
 window.abrirModalCadastro = () => {
-  document.getElementById("modal-cliente").classList.remove("hidden");
+  // 1. Limpa o formulário para um novo cadastro
+  document.getElementById('nome-cliente').value = "";
+    document.getElementById('whatsapp-cliente').value = "";
+    document.getElementById('qtd-refil').value = 1;
+    document.getElementById('modal-title').innerText = "Novo Cliente";
+
+  // 2. Reseta o botão para a função de salvar novo
+    document.querySelector('.btn-confirm').onclick = window.salvarCliente;
+  
+  // 3. Seta a data de hoje automaticamente
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('data-venda').value = hoje;
+  
+// 4. Seleciona o modelo padrão (12m)
+    window.selecionarModelo(12);
+  
+  // 5. Garante que o app vá para o topo e mostre o modal
+    window.scrollTo(0, 0);
+    document.body.classList.add('modal-open');
+    document.getElementById('modal-cliente').classList.remove('hidden');
+    document.getElementById('modal-cliente').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
 };
 
 window.fecharModal = () => {
