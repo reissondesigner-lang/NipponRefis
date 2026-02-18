@@ -2,15 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel Admin - NipponRefis</title>
+  <title>Painel Admin - ControlAdmin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
   <!-- LOGIN -->
   <div id="login-screen" class="screen active">
-    <div class="card">
-      <h2>ADMIN</h2>
+    <div class="login-container">
+      <div class="logo">
+        <span style="color: #e54848;">Control</span><span style="color: #0a4c96;">Admin</span>
+          </div>
       <input type="email" id="email" placeholder="E-mail">
       <input type="password" id="password" placeholder="Senha">
       <button onclick="handleLogin()">Entrar</button>
@@ -20,27 +23,33 @@
   <!-- PAINEL ADMIN -->
   <div id="admin-screen" class="screen">
     <header class="top-bar">
-      <h2>PAINEL ADMIN</h2>
-      <button onclick="logout()">Sair</button>
+      <div class="logo-header">
+          <span style="color: #e53935;">Control</span><span style="color: #0a4c96;">Admin</span>
+            </div>
+      <div class="header-actions">
+        <button onclick="logout()" class="btn-icon"><i class="fas fa-sign-out-alt"></i>
+          </button>
+            </div>
     </header>
 
     <div class="dashboard">
-      <div class="stats">
-        <div class="stat-box">
-          <h3 id="total-users">0</h3>
+      <div class="dashboard">
+        <div class="card">
+          <h3 id="total-users" class="number-box azul">1</h3>
           <p>Usuários</p>
         </div>
 
-        <div class="stat-box">
-          <h3 id="ativos">0</h3>
+        <div class="card">
+          <h3 id="ativos" class="number-box amarelo">1</h3>
           <p>Ativos</p>
         </div>
 
-        <div class="stat-box">
-          <h3 id="bloqueados">0</h3>
+        <div class="card">
+          <h3 id="bloqueados" class="number-box vermelho">0</h3>
           <p>Bloqueados</p>
         </div>
       </div>
+
 
       <div class="lista" id="lista-usuarios"></div>
     </div>
