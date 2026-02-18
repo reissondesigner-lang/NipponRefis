@@ -57,7 +57,7 @@ function showApp() {
 // LOGIN / CADASTRO
 // ============================
 
-window.handleLogin = () => {
+window.handleLogin = async () => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
@@ -116,26 +116,33 @@ onAuthStateChanged(auth, async (user) => {
 
   usuarioLogado = user;
 
-  const docSnap = await getDoc(doc(db, "users", user.uid));
+  try {
+    const docSnap = await getDoc(doc(db, "users", user.uid));
 
-  if (!docSnap.exists()) {
+    if (!docSnap.exists()) {
+      showLogin();
+      return;
+    }
+
+    const data = docSnap.data();
+
+    if (data.pago === true) {
+      msgPadrao = data.msgCustom || msgPadrao;
+      document.getElementById("estoque-badge").innerText =
+        (data.estoque9 || 0) + (data.estoque12 || 0);
+
+      showApp();
+      renderClientes();
+    } else {
+      showBlock();
+    }
+
+  } catch (e) {
+    console.error("Erro ao carregar usuário:", e);
     showLogin();
-    return;
-  }
-
-  const data = docSnap.data();
-
-  if (data.pago === true) {
-    msgPadrao = data.msgCustom || msgPadrao;
-    document.getElementById("estoque-badge").innerText =
-      (data.estoque9 || 0) + (data.estoque12 || 0);
-
-    showApp();
-    renderClientes();
-  } else {
-    showBlock();
   }
 });
+
 
 
 // ============================
