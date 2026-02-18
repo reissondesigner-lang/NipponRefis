@@ -352,8 +352,8 @@ window.reposicaoCliente = async (id, modelo) => {
 
   if (!novaData) return;
 
-  const dataBase = new Date(novaData);
-  const novaTroca = new Date(dataBase);
+  const dataBase = novaData;
+  const novaTroca = dataBase;
   novaTroca.setMonth(novaTroca.getMonth() + modelo);
 
   await updateDoc(doc(db, "clientes", id), {
