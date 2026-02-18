@@ -57,7 +57,7 @@ function showApp() {
 // LOGIN / CADASTRO
 // ============================
 
-window.handleLogin = async () => {
+window.handleLogin = () => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
