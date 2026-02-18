@@ -122,12 +122,14 @@ window.renderUsuarios = async () => {
 
     lista.innerHTML += `
       <div class="cliente-card ${u.pago ? "status-ok" : "status-vencido"}">
-        <div class="card">
-          <h4>${u.email}</h4>
-          <small>Status: ${u.pago ? "Ativo" : "Bloqueado"}</small>
+        <div class="card-linha">
+          <h3>${u.email}</h3>
         </div>
 
-        <div class="card-actions">
+        <div class="card-linha">
+          <span>Status: <b> ${u.pago ? "Ativo" : "Bloqueado"}</b></span>
+        
+        <div class="card-linha">
           <button onclick="togglePagamento('${d.id}', ${u.pago})" class="btn-round btn-edit">
             ${u.pago ? "Bloquear" : "Ativar"}
           </button>
@@ -135,6 +137,7 @@ window.renderUsuarios = async () => {
           <button onclick="excluirUsuario('${d.id}')" class="btn-round btn-confirm">
             🗑 Excluir
           </button>
+         </div>
         </div>
       </div>
     `;
