@@ -209,11 +209,11 @@ window.renderClientes = async () => {
         📲 Enviar
       </button>
 
-      <button onclick="editarCliente('${d.id}')" class="btn-small">
+      <button onclick="editarCliente('${d.id}')">
         ✏️ Editar
       </button>
 
-      <button onclick="reposicaoCliente('${d.id}')" class="btn-small">
+      <button onclick="reposicaoCliente('${d.id}')">
         🔄 Reposição
       </button>
     </div>
