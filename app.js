@@ -388,14 +388,28 @@ async function finalizarEdicao(id) {
 }
 
 window.reposicaoCliente = async (id, modelo) => {
-  if(!confirm("Confirmar troca de refil?")) return;
-    const nova = new Date();
-    const prox = new Date(); prox.setMonth(prox.getMonth() + modelo);
-  await updateDoc(doc(db, "clientes", id), {
-        ultimaTroca: nova,
-        proximaTroca: prox,
-    });  
-  renderClientes();
+  if (!confirm("Confirmar troca de refil?")) return;
+  
+  // Verifica se modelo é um número válido
+  const modeloNumero = Number(modelo);
+  if (isNaN(modeloNumero)) {
+    alert("Modelo inválido. Por favor, insira um número válido.");
+    return;
+  }
+
+  const nova = new Date();
+  const prox = new Date();
+  prox.setMonth(prox.getMonth() + modeloNumero);  // Adiciona o número de meses
+
+  try {
+    await updateDoc(doc(db, "clientes", id), {
+      ultimaTroca: nova,
+      proximaTroca: prox,
+    });
+    renderClientes();
+  } catch (error) {
+    console.error("Erro ao atualizar o cliente:", error);
+  }
 };
 
   window.selecionarModelo = (modelo) => {
