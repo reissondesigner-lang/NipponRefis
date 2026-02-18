@@ -202,14 +202,14 @@ window.renderClientes = async () => {
         <h4>${item.nome}</h4>
         <small>${item.qtd}x ${item.modelo == 9 ? "Alcaline" : "Alcaline Max"}</small>
       </div>
-       <div><button class="btn-round btn-repo" onclick="reposicaoCliente('${d.id}')">🔄 Repor</button></div>
+       <div><button class="btn-round btn-repo" onclick="reposicaoCliente('${d.id}')"><i class="fas fa-sync"></i> Repor</button></div>
     </div>
 
     <div class="card-linha">
       <span>Próx. Troca: <b>${prox.toLocaleDateString()}</b></span>
       <div class="card-linha">
-      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:7px">📲 Enviar Mensagem</button>
-      <button class="btn-round btn-edit" onclick="editarCliente('${d.id}')">✏️ Editar</button>
+      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:7px"><i class="fas fa-sync"></i> Enviar Mensagem</button>
+      <button class="btn-round btn-edit" onclick="editarCliente('${d.id}')"><i class="fas fa-pencil-alt"></i> Editar</button>
       </div>
     </div>
 
