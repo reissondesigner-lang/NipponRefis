@@ -208,7 +208,7 @@ window.renderClientes = async () => {
     <div class="card-linha">
       <span>Próx. Troca: <b>${prox.toLocaleDateString()}</b></span>
       <div class="card-linha">
-      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:7px"><i class="fas fa-sync"></i> Enviar Mensagem</button>
+      <button class="btn-round btn-wpp" onclick="enviarWhatsApp('${d.id}')" style="margin:7px"><i class="fab fa-whatsapp"></i> Enviar Msg</button>
       <button class="btn-round btn-edit" onclick="editarCliente('${d.id}')"><i class="fas fa-pencil-alt"></i> Editar</button>
       </div>
     </div>
