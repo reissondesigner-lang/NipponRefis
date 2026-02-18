@@ -342,6 +342,9 @@ window.editarCliente = async (id) => {
   document.getElementById("qtd-refil").value = cliente.qtd;
 
 window.selecionarModelo(modelo);
+document.getElementById('modal-cliente').classList.remove('hidden');
+    window.scrollTo(0, 0);
+};
 
 window.reposicaoCliente = async (id, modelo) => {
   const novaData = prompt("Informe a nova data da venda (AAAA-MM-DD):", 
