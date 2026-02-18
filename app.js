@@ -150,7 +150,7 @@ onAuthStateChanged(auth, async (user) => {
 // ============================
 
 window.renderClientes = async () => {
-  try {
+
     if (!usuarioLogado) return;
 
     const lista = document.getElementById("lista-clientes");
@@ -218,16 +218,13 @@ window.renderClientes = async () => {
       </button>
     </div>
   </div>
-`;
+`};
 
     document.getElementById("count-hoje").innerText = hojeCount;
     document.getElementById("count-atrasados").innerText = atrasadoCount;
     document.getElementById("count-7dias").innerText = semanaCount;
 
-  } catch (error) {
-    console.error("Erro ao renderizar clientes:", error);
-  }
-};
+  };
 
 
 
