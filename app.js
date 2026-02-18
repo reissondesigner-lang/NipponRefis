@@ -1,5 +1,10 @@
 import { auth, db } from "./firebase-config.js";
-
+import { initializeApp } from "firebase/app";
+import { 
+  initializeFirestore, 
+  persistentLocalCache 
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -21,6 +26,17 @@ import {
   Timestamp,
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔹 Inicializa app
+const app = initializeApp(firebaseConfig);
+
+// 🔥 ATIVA CACHE OFFLINE AQUI
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache()
+});
+
+// 🔹 Auth
+const auth = getAuth(app);
 
 let usuarioLogado = null;
 let msgPadrao = "Olá [NOME], Seu refil [MODELO] vence em [DATA]. Vamos trocar?";
@@ -394,15 +410,12 @@ window.logout = () => {
   }
 };
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('./sw.js')
-      .then(reg => {
-        console.log('SW principal registrado:', reg.scope);
-      })
-      .catch(err => {
-        console.error('Erro ao registrar SW principal:', err);
-      });
-  });
+if ('serviceWorker' in navigator') {
+  navigator.serviceWorker.register('/NipponRefis/sw.js')
+    .then(reg => {
+      console.log('SW registrado:', reg.scope);
+    })
+    .catch(err => {
+      console.error('Erro ao registrar SW:', err);
+    });
 }
