@@ -1,14 +1,14 @@
-const CACHE_NAME = 'nipponsync-v1';
+const CACHE_NAME = 'nipponsync-v2';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/icon-512.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
+  '/NipponRefis/',
+  '/NipponRefis/index.html',
+  '/NipponRefis/style.css',
+  '/NipponRefis/app.js',
+  '/NipponRefis/icon-512.png'
 ];
 
+// INSTALL
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
@@ -17,6 +17,7 @@ self.addEventListener('install', event => {
   );
 });
 
+// ACTIVATE
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -32,12 +33,18 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// FETCH
 self.addEventListener('fetch', event => {
 
-  // Só intercepta GET
+  // Só GET
   if (event.request.method !== 'GET') return;
 
-  // Estratégia Network First apenas para navegação
+  const url = new URL(event.request.url);
+
+  // 🚫 NÃO INTERCEPTA FIREBASE
+  if (url.origin.includes('firebase')) return;
+
+  // 📌 Para navegação (HTML)
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -52,7 +59,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Para arquivos estáticos → Cache First
+  // 📦 Para arquivos estáticos
   event.respondWith(
     caches.match(event.request).then(cached =>
       cached || fetch(event.request)
