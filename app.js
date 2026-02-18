@@ -91,11 +91,11 @@ window.handleSignup = async () => {
     await setDoc(doc(db, "users", cred.user.uid), {
       email: email,
       role: "user",
-      pago: false,
+      pago: true,
       createdAt: Timestamp.now()
     });
 
-    alert("Conta criada! Aguarde ativação.");
+    alert("Conta criada!");
   } catch (e) {
     alert(e.message);
   }
