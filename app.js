@@ -391,7 +391,10 @@ window.reposicaoCliente = async (id, modelo) => {
   if(!confirm("Confirmar troca de refil?")) return;
     const nova = new Date();
     const prox = new Date(); prox.setMonth(prox.getMonth() + modelo);
-    await updateDoc(doc(db, "clientes", id),{ ultimaTroca: nova, proximaTroca: prox });
+  await updateDoc(doc(db, "clientes", id), {
+        ultimaTroca: nova,
+        proximaTroca: prox,
+    });  
   renderClientes();
 };
 
