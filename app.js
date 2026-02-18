@@ -376,7 +376,7 @@ window.logout = () => {
   }
 };
 
-if ('serviceWorker' in navigator') {
+if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/NipponRefis/sw.js')
     .then(reg => {
       console.log('SW registrado:', reg.scope);
