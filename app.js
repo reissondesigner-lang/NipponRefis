@@ -351,21 +351,41 @@ window.enviarWhatsApp = async (id) => {
 
 window.editarCliente = async (id) => {
   const docSnap = await getDoc(doc(db, "clientes", id));
-
-  if (!docSnap.exists()) return;
-
   const cliente = docSnap.data();
+  if (!docSnap.exists()) return;
   clienteEditando = id;
 
   document.getElementById("nome-cliente").value = cliente.nome;
   document.getElementById("whatsapp-cliente").value = cliente.whatsapp;
   document.getElementById("data-venda").value = cliente.dataVenda.split("T")[0];
   document.getElementById("qtd-refil").value = cliente.qtd;
+  selecionarModelo(modelo);
+  document.getElementById('modal-cliente').classList.remove('hidden');
+  document.querySelector('.btn-confirm').onclick = () => finalizarEdicao(id);
 
-window.selecionarModelo(modelo);
-document.getElementById('modal-cliente').classList.remove('hidden');
     window.scrollTo(0, 0);
 };
+
+async function finalizarEdicao(id) {
+    const modelo = parseInt(document.getElementById('modelo-refil-valor').value);
+    const dataVendaStr = document.getElementById('data-venda').value;
+    const partes = dataVendaStr.split("-");
+    const dataVenda = new Date(partes[0], partes[1] - 1, partes[2]);
+    const proxima = new Date(dataVenda);
+    proxima.setMonth(proxima.getMonth() + modelo);
+
+    await updateDoc(doc(db, "clientes", id), {
+        nome: document.getElementById('nome-cliente').value,
+        whatsapp: document.getElementById('whatsapp-cliente').value,
+        ultimaTroca: dataVenda,
+        proximaTroca: proxima,
+        modelo: modelo,
+        qtd: parseInt(document.getElementById('qtd-refil').value)
+    });
+    fecharModal();
+    renderClientes();
+    document.querySelector('.btn-confirm').onclick = window.salvarCliente;
+}
 
 window.reposicaoCliente = async (id, modelo) => {
   if(!confirm("Confirmar troca de refil?")) return;
